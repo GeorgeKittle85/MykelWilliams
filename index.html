@@ -1,1410 +1,1772 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Student Tools — Redesign</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grammar Blitz — Proprietary Grammar Engine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script>
-  const TWEAKS = /*EDITMODE-BEGIN*/{
-    "theme": "light",
-    "accent": "lilac",
-    "radius": "soft",
-    "fontPair": "classic",
-    "cardStyle": "shadow",
-    "density": "compact",
-    "sitePalette": "linen",
-    "logoMath": "#B5C9A8",
-    "logoStudy": "#B8D4E3",
-    "logoMusic": "#EEBFB8",
-    "logoWriting": "#F4DA8A",
-    "logoBrand": "#D4C4B0"
-  }/*EDITMODE-END*/;
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,500&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* ============================================================
-     TOKENS — light + dark, accent palettes, radius, fonts, density
-     ============================================================ */
   :root {
-    /* Light mode (default) — airy warm whites */
-    --bg: #FBF8F3;
-    --bg-elev: #FFFFFF;
-    --bg-sunken: #F4EEE4;
-    --bg-sidebar: #F7F2EA;
-    --border: #EADFD0;
-    --border-strong: #D9CAB3;
-    --text: #2A2620;
-    --text-muted: #746B5E;
-    --text-subtle: #A59985;
-    --shadow-sm: 0 1px 2px rgba(60, 40, 10, 0.04);
-    --shadow-md: 0 4px 14px rgba(60, 40, 10, 0.06);
-    --shadow-lg: 0 12px 32px rgba(60, 40, 10, 0.08);
-
-    /* Accent — peach (default) */
-    --accent: #E8875C;
-    --accent-soft: #FBE4D4;
-    --accent-softer: #FDF1E7;
-    --accent-ink: #B45A2E;
-
-    /* Supporting pastels (for clay icons) */
-    --clay-sage: #B5C9A8;
-    --clay-sage-dark: #7A9968;
-    --clay-sky: #B8D4E3;
-    --clay-sky-dark: #6B9CB8;
-    --clay-butter: #F4DA8A;
-    --clay-butter-dark: #C9A84A;
-    --clay-rose: #EEBFB8;
-    --clay-rose-dark: #C87A70;
-    --clay-lilac: #CBC0E2;
-    --clay-lilac-dark: #8F7FB8;
-    --clay-peach: #F5C9A8;
-    --clay-peach-dark: #D68A55;
-
-    /* Radius scale */
-    --r-sm: 10px;
-    --r-md: 16px;
-    --r-lg: 24px;
-    --r-xl: 32px;
-    --r-pill: 999px;
-
-    /* Density */
-    --space-card-pad: 28px;
-    --space-card-gap: 20px;
-    --space-section: 56px;
-
-    /* Type */
-    --font-display: "Instrument Serif", "DM Serif Display", Georgia, serif;
-    --font-body: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    --ink: #1a1614;
+    --ink-soft: #4a403b;
+    --ink-faint: #8a7e78;
+    --paper: #f6f1e7;
+    --paper-soft: #efe7d7;
+    --paper-warm: #fbf6ec;
+    --rule: #2a231f;
+    --accent: #b8311e;
+    --accent-warm: #d94e2f;
+    --amber: #c88a1e;
+    --blue: #2d5a8a;
+    --green: #4a7c3c;
+    --err-bg: rgba(184, 49, 30, 0.14);
+    --warn-bg: rgba(200, 138, 30, 0.16);
+    --style-bg: rgba(45, 90, 138, 0.11);
   }
 
-  /* ---- Accent variants ---- */
-  :root[data-accent="peach"]  { --accent:#E8875C; --accent-soft:#FBE4D4; --accent-softer:#FDF1E7; --accent-ink:#B45A2E; }
-  :root[data-accent="sage"]   { --accent:#7A9968; --accent-soft:#DDE8D3; --accent-softer:#EEF3E8; --accent-ink:#4E6B3E; }
-  :root[data-accent="sky"]    { --accent:#6B9CB8; --accent-soft:#D4E4EE; --accent-softer:#E9F0F5; --accent-ink:#3E6A84; }
-  :root[data-accent="rose"]   { --accent:#C87A70; --accent-soft:#EED5D1; --accent-softer:#F6E8E5; --accent-ink:#8F4C44; }
-  :root[data-accent="butter"] { --accent:#C9A84A; --accent-soft:#F1E4B8; --accent-softer:#F8F0D8; --accent-ink:#8A6F1E; }
-  :root[data-accent="lilac"]  { --accent:#8F7FB8; --accent-soft:#DDD6ED; --accent-softer:#EDE8F5; --accent-ink:#5F4F8A; }
+- { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ---- Dark mode (warm, not pitch black) ---- */
-  :root[data-theme="dark"] {
-    --bg: #1A1714;
-    --bg-elev: #231F1B;
-    --bg-sunken: #14110E;
-    --bg-sidebar: #1F1B17;
-    --border: #33291F;        /* lower chroma for subtle borders */
-    --border-strong: #4A3B2C;
-    --text: #F4ECE0;
-    --text-muted: #B8AC9A;
-    --text-subtle: #7A6F60;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-    --shadow-md: 0 4px 14px rgba(0,0,0,0.35);
-    --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
+html, body {
+background: var(–paper);
+color: var(–ink);
+font-family: ‘Figtree’, -apple-system, sans-serif;
+font-size: 16px;
+line-height: 1.5;
+min-height: 100vh;
+-webkit-font-smoothing: antialiased;
+}
 
-    --clay-sage: #8FA683;
-    --clay-sage-dark: #B5C9A8;
-    --clay-sky: #8BADC2;
-    --clay-sky-dark: #B8D4E3;
-    --clay-butter: #D4B867;
-    --clay-butter-dark: #F4DA8A;
-    --clay-rose: #C99791;
-    --clay-rose-dark: #EEBFB8;
-    --clay-lilac: #A294C2;
-    --clay-lilac-dark: #CBC0E2;
-    --clay-peach: #D8A07D;
-    --clay-peach-dark: #F5C9A8;
-  }
-  :root[data-theme="dark"][data-accent="peach"]  { --accent:#F0A07E; --accent-soft:#3A2A1F; --accent-softer:#2A1F17; --accent-ink:#FBE4D4; }
-  :root[data-theme="dark"][data-accent="sage"]   { --accent:#A7C296; --accent-soft:#2A3322; --accent-softer:#1F2619; --accent-ink:#DDE8D3; }
-  :root[data-theme="dark"][data-accent="sky"]    { --accent:#8FB9D2; --accent-soft:#243540; --accent-softer:#1A2730; --accent-ink:#D4E4EE; }
-  :root[data-theme="dark"][data-accent="rose"]   { --accent:#E0A199; --accent-soft:#3A2623; --accent-softer:#2A1C1A; --accent-ink:#EED5D1; }
-  :root[data-theme="dark"][data-accent="butter"] { --accent:#E6C76D; --accent-soft:#362D14; --accent-softer:#26200E; --accent-ink:#F1E4B8; }
-  :root[data-theme="dark"][data-accent="lilac"]  { --accent:#B0A0D8; --accent-soft:#2E2840; --accent-softer:#221E30; --accent-ink:#DDD6ED; }
+/* Subtle paper texture via gradients */
+body {
+background-image:
+radial-gradient(ellipse at top left, rgba(200,138,30,0.04), transparent 50%),
+radial-gradient(ellipse at bottom right, rgba(184,49,30,0.03), transparent 50%);
+background-attachment: fixed;
+}
 
-  /* ---- Radius variants ---- */
-  :root[data-radius="sharp"] { --r-sm:4px; --r-md:6px; --r-lg:8px; --r-xl:10px; --r-pill:10px; }
-  :root[data-radius="soft"]  { --r-sm:10px; --r-md:16px; --r-lg:24px; --r-xl:32px; --r-pill:999px; }
-  :root[data-radius="round"] { --r-sm:16px; --r-md:24px; --r-lg:36px; --r-xl:48px; --r-pill:999px; }
+.app {
+max-width: 1400px;
+margin: 0 auto;
+padding: 32px 40px 80px;
+}
 
-  /* ---- Font pairings ---- */
-  :root[data-fontpair="editorial"] { --font-display:"Instrument Serif", Georgia, serif; --font-body:"Figtree", sans-serif; }
-  :root[data-fontpair="classic"]   { --font-display:"DM Serif Display", Georgia, serif; --font-body:"Plus Jakarta Sans", sans-serif; }
-  :root[data-fontpair="modern"]    { --font-display:"Fraunces", Georgia, serif; --font-body:"Inter", sans-serif; }
-  :root[data-fontpair="sans"]      { --font-display:"Figtree", sans-serif; --font-body:"Figtree", sans-serif; }
+/* ========== HEADER ========== */
+header.masthead {
+border-bottom: 3px double var(–rule);
+padding-bottom: 20px;
+margin-bottom: 32px;
+display: flex;
+justify-content: space-between;
+align-items: flex-end;
+flex-wrap: wrap;
+gap: 20px;
+}
 
-  /* ---- Density ---- */
-  :root[data-density="airy"]    { --space-card-pad:32px; --space-card-gap:24px; --space-section:72px; }
-  :root[data-density="balanced"]{ --space-card-pad:24px; --space-card-gap:18px; --space-section:48px; }
-  :root[data-density="compact"] { --space-card-pad:16px; --space-card-gap:12px; --space-section:32px; }
+.title-block h1 {
+font-family: ‘Fraunces’, serif;
+font-weight: 800;
+font-size: clamp(40px, 6vw, 72px);
+line-height: 0.95;
+letter-spacing: -0.03em;
+color: var(–ink);
+}
 
-  /* ============================================================
-     BASE
-     ============================================================ */
-  * { box-sizing: border-box; }
-  html, body { margin:0; padding:0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-    transition: background 240ms ease, color 240ms ease;
-  }
-  h1,h2,h3,h4 { margin:0; font-weight:700; letter-spacing:-0.01em; }
-  p { margin:0; }
-  a { color: var(--accent-ink); text-decoration: none; }
-  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.title-block .tagline {
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-size: 16px;
+color: var(–ink-soft);
+margin-top: 8px;
+letter-spacing: 0.01em;
+}
 
-  /* Display italic headlines */
-  .display {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-style: italic;
-    letter-spacing: -0.015em;
-    line-height: 1.05;
-  }
+.masthead-meta {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–ink-faint);
+text-transform: uppercase;
+letter-spacing: 0.15em;
+text-align: right;
+line-height: 1.8;
+}
 
-  /* Paper grain — very subtle, only in light mode */
-  body::before {
-    content:"";
-    position:fixed; inset:0;
-    pointer-events:none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0.2  0 0 0 0 0.15  0 0 0 0 0.1  0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    opacity: 0.5;
-    z-index: 0;
-    mix-blend-mode: multiply;
-  }
-  :root[data-theme="dark"] body::before { opacity: 0.25; mix-blend-mode: screen; }
+.masthead-meta strong {
+color: var(–ink);
+font-weight: 600;
+}
 
-  /* ============================================================
-     LAYOUT — sidebar + content (preserved from original)
-     ============================================================ */
-  .app {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    min-height: 100vh;
-    position: relative;
-    z-index: 1;
-  }
+/* ========== LAYOUT ========== */
+.workspace {
+display: grid;
+grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+gap: 32px;
+align-items: start;
+}
 
-  .sidebar {
-    background: var(--bg-sidebar);
-    border-right: 1px solid var(--border);
-    padding: 28px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-  }
-  .sidebar::-webkit-scrollbar { width:6px; }
-  .sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius:3px; }
+@media (max-width: 960px) {
+.workspace { grid-template-columns: 1fr; }
+.app { padding: 24px 20px 60px; }
+}
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 4px 8px;
-  }
-  .brand-mark {
-    width: 44px; height: 44px;
-    border-radius: var(--r-md);
-    display: grid; place-items: center;
-    position: relative;
-    flex-shrink: 0;
-  }
-  .brand-text { display:flex; flex-direction:column; line-height:1.15; }
-  .brand-text strong { font-size: 16px; font-weight: 700; color: var(--text); }
-  .brand-text span { font-size: 10px; letter-spacing:0.14em; text-transform:uppercase; color: var(--text-subtle); margin-top:2px; }
+/* ========== EDITOR ========== */
+.editor-panel {
+background: var(–paper-warm);
+border: 1px solid rgba(42,35,31,0.12);
+border-radius: 2px;
+box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 20px 40px -20px rgba(42,35,31,0.15);
+overflow: hidden;
+}
 
-  .nav-group { display: flex; flex-direction: column; gap: 4px; }
-  .nav-label {
-    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--text-subtle);
-    padding: 0 12px 4px; font-weight: 600;
-  }
-  .nav-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 12px;
-    border-radius: var(--r-sm);
-    color: var(--text-muted);
-    font-size: 14px; font-weight: 500;
-    cursor: pointer;
-    transition: background 160ms ease, color 160ms ease;
-    text-decoration: none;
-  }
-  .nav-item:hover { background: var(--accent-softer); color: var(--text); text-decoration:none; }
-  .nav-item.active {
-    background: var(--accent-soft);
-    color: var(--accent-ink);
-  }
-  .nav-item .clay-icon { width: 22px; height: 22px; flex-shrink:0; }
+.toolbar {
+display: flex;
+gap: 4px;
+padding: 12px 16px;
+border-bottom: 1px solid rgba(42,35,31,0.1);
+background: rgba(239,231,215,0.5);
+flex-wrap: wrap;
+}
 
-  .sidebar-footer {
-    margin-top: auto;
-    padding: 12px;
-    font-size: 12px;
-    color: var(--text-subtle);
-    line-height: 1.8;
-  }
-  .sidebar-footer a { color: var(--text-muted); text-decoration: none; }
-  .sidebar-footer a:hover { color: var(--text); }
+.btn {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+font-weight: 500;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+background: transparent;
+border: 1px solid transparent;
+color: var(–ink-soft);
+padding: 8px 14px;
+cursor: pointer;
+border-radius: 2px;
+transition: all 0.15s ease;
+}
 
-  .content {
-    padding: 48px 56px 80px;
-    max-width: 1200px;
-    width: 100%;
-  }
+.btn:hover {
+background: var(–ink);
+color: var(–paper);
+}
 
-  /* ============================================================
-     LOGO ICONS — solid flat color, no gradients
-     Logo colors are set as CSS vars on :root by JS tweaks
-     ============================================================ */
-  :root {
-    --logo-math:    #F5C9A8;
-    --logo-study:   #B8D4E3;
-    --logo-music:   #CBC0E2;
-    --logo-writing: #B5C9A8;
-    --logo-brand:   #DDD6ED;
-    --logo-butter:  #F4DA8A;
-    --logo-rose:    #EEBFB8;
-  }
+.btn-primary {
+background: var(–ink);
+color: var(–paper);
+}
 
-  .clay-icon {
-    width: 56px; height: 56px;
-    border-radius: var(--r-md);
-    display: grid; place-items: center;
-    flex-shrink: 0;
-    background: var(--icon-bg, #e0d8f0);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    color: rgba(0,0,0,0.55);
-    font-weight: 700;
-    font-size: 22px;
-    font-family: var(--font-display);
-    font-style: italic;
-  }
-  :root[data-theme="dark"] .clay-icon {
-    color: rgba(255,255,255,0.75);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
-  }
+.btn-primary:hover {
+background: var(–accent);
+}
 
-  /* Per-category solid fills */
-  .clay-math    { --icon-bg: var(--logo-math); }
-  .clay-study   { --icon-bg: var(--logo-study); }
-  .clay-music   { --icon-bg: var(--logo-music); }
-  .clay-writing { --icon-bg: var(--logo-writing); }
-  .clay-butter  { --icon-bg: var(--logo-butter); }
-  .clay-rose    { --icon-bg: var(--logo-rose); }
-  .clay-accent  { --icon-bg: var(--logo-brand); }
+.btn-ghost {
+color: var(–ink-faint);
+}
 
-  .clay-icon.sm { width: 40px; height: 40px; font-size: 16px; border-radius: var(--r-sm); }
-  .clay-icon.xs { width: 28px; height: 28px; font-size: 12px; border-radius: 8px; }
-  .clay-icon.lg { width: 72px; height: 72px; font-size: 28px; border-radius: var(--r-lg); }
+.editor-wrap {
+position: relative;
+min-height: 460px;
+}
 
-  /* ============================================================
-     HEADER & GREETING
-     ============================================================ */
-  .greet-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-    gap: 24px;
-  }
-  .greet-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px 6px 8px;
-    background: var(--accent-softer);
-    color: var(--accent-ink);
-    border-radius: var(--r-pill);
-    font-size: 13px;
-    font-weight: 500;
-    border: 1px solid var(--accent-soft);
-  }
-  .greet-chip .clay-icon { width: 22px; height: 22px; font-size: 10px; }
+.editor-wrap textarea,
+.editor-wrap .highlights {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+margin: 0;
+padding: 28px 32px;
+font-family: ‘Fraunces’, Georgia, serif;
+font-size: 18px;
+line-height: 1.7;
+font-weight: 400;
+letter-spacing: 0.002em;
+white-space: pre-wrap;
+word-wrap: break-word;
+overflow-wrap: break-word;
+border: 0;
+border-radius: 0;
+outline: none;
+box-sizing: border-box;
+}
 
-  .page-title {
-    font-size: 52px;
-    line-height: 1.0;
-    letter-spacing: -0.02em;
-    margin-bottom: 12px;
-  }
-  .page-title em {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 400;
-    color: var(--accent-ink);
-  }
-  .page-sub {
-    font-size: 17px;
-    color: var(--text-muted);
-    max-width: 620px;
-    margin-bottom: 40px;
-    line-height: 1.55;
-  }
+.editor-wrap .highlights {
+color: transparent;
+pointer-events: none;
+overflow: auto;
+z-index: 1;
+user-select: none;
+}
 
-  /* ============================================================
-     CARDS
-     ============================================================ */
-  .tool-grid {
-    display: grid;
-    gap: var(--space-card-gap);
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-  .tool-grid.two { grid-template-columns: repeat(2, 1fr); max-width: 820px; }
-  .tool-grid.three { grid-template-columns: repeat(3, 1fr); }
+.editor-wrap textarea {
+background: transparent;
+color: var(–ink);
+resize: none;
+z-index: 2;
+caret-color: var(–accent);
+}
 
-  .tool-card {
-    background: var(--bg-elev);
-    border-radius: var(--r-lg);
-    padding: var(--space-card-pad);
-    border: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    gap: 16px;
-    cursor: pointer;
-    transition: transform 200ms cubic-bezier(.2,.8,.2,1), box-shadow 200ms ease, border-color 200ms ease;
-    position: relative;
-    text-decoration: none;
-    color: inherit;
-  }
-  .tool-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--border-strong);
-    text-decoration: none;
-  }
+.editor-wrap textarea::placeholder {
+color: var(–ink-faint);
+font-style: italic;
+}
 
-  /* Card style variants */
-  :root[data-cardstyle="flat"]    .tool-card { box-shadow: none; }
-  :root[data-cardstyle="flat"]    .tool-card:hover { box-shadow: var(--shadow-sm); }
-  :root[data-cardstyle="shadow"]  .tool-card { box-shadow: var(--shadow-md); border-color: transparent; }
-  :root[data-cardstyle="shadow"]  .tool-card:hover { box-shadow: var(--shadow-lg); }
-  :root[data-cardstyle="outline"] .tool-card { border-color: var(--border-strong); box-shadow: none; }
-  :root[data-cardstyle="outline"] .tool-card:hover { border-color: var(--accent); }
+.highlights mark {
+background: transparent;
+color: transparent;
+border-radius: 2px;
+padding: 0;
+}
 
-  .tool-card h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.01em;
-  }
-  .tool-card p {
-    font-size: 14px;
-    color: var(--text-muted);
-    line-height: 1.55;
-  }
-  .tool-card .tags {
-    display: flex; gap: 6px; flex-wrap: wrap;
-    margin-top: -4px;
-  }
-  .tag {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text-subtle);
-    padding: 2px 8px;
-    background: var(--bg-sunken);
-    border-radius: var(--r-sm);
-  }
-  .tool-card .count {
-    margin-top: auto;
-    padding-top: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent-ink);
-    display: inline-flex; align-items: center; gap: 4px;
-  }
-  .tool-card .count::after { content: " →"; transition: transform 200ms ease; display:inline-block; }
-  .tool-card:hover .count::after { transform: translateX(3px); }
+.highlights mark.sev-error {
+background: var(–err-bg);
+box-shadow: inset 0 -2px 0 var(–accent);
+}
 
-  /* Category card — bigger, for landing */
-  .cat-card { padding: calc(var(--space-card-pad) + 4px); }
-  .cat-card .clay-icon { width: 64px; height: 64px; border-radius: var(--r-md); font-size: 26px; margin-bottom: 4px; }
-  .cat-card h3 { font-size: 24px; }
-  .cat-card .kicker {
-    font-family: var(--font-mono);
-    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--text-subtle);
-  }
+.highlights mark.sev-warning {
+background: var(–warn-bg);
+box-shadow: inset 0 -2px 0 var(–amber);
+}
 
-  /* ============================================================
-     SECTION HEADERS (for Math page grouping)
-     ============================================================ */
-  .section-group { margin-bottom: var(--space-section); }
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  .section-head h2 {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 28px;
-    color: var(--text);
-  }
-  .section-head .count-chip {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text-subtle);
-    padding: 3px 10px;
-    background: var(--bg-sunken);
-    border-radius: var(--r-pill);
-  }
+.highlights mark.sev-style {
+background: var(–style-bg);
+box-shadow: inset 0 -1px 0 var(–blue);
+}
 
-  /* ============================================================
-     LEGAL / CONTACT CONTENT
-     ============================================================ */
-  .prose {
-    max-width: 680px;
-    font-size: 15px;
-    color: var(--text);
-    line-height: 1.7;
-  }
-  .prose h2 {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 26px;
-    color: var(--accent-ink);
-    margin: 40px 0 12px;
-    letter-spacing: -0.01em;
-  }
-  .prose p { margin-bottom: 16px; }
-  .prose .updated {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text-subtle);
-    margin-bottom: 32px;
-  }
-  .prose .callout {
-    background: var(--accent-softer);
-    border-left: 0;
-    border-radius: var(--r-md);
-    padding: 20px 24px;
-    margin-bottom: 24px;
-    color: var(--accent-ink);
-    font-size: 14px;
-  }
+.highlights mark.focus {
+outline: 2px solid var(–ink);
+outline-offset: 1px;
+}
 
-  .back-link {
-    font-size: 14px;
-    color: var(--accent-ink);
-    display: inline-flex; align-items: center; gap: 6px;
-    margin-bottom: 32px;
-    cursor: pointer;
-    text-decoration: none;
-  }
-  .back-link:hover { text-decoration: underline; }
+/* ========== STATS BAR ========== */
+.stats-bar {
+display: flex;
+border-top: 1px solid rgba(42,35,31,0.1);
+background: rgba(239,231,215,0.5);
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+}
 
-  .contact-card {
-    background: var(--bg-elev);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    padding: 28px;
-    margin-bottom: 16px;
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    max-width: 580px;
-  }
-  .contact-card h4 {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .contact-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 8px; }
-  .contact-card .email { font-weight: 600; color: var(--accent-ink); font-size: 15px; }
+.stat {
+flex: 1;
+padding: 12px 16px;
+border-right: 1px solid rgba(42,35,31,0.08);
+color: var(–ink-faint);
+}
+.stat:last-child { border-right: 0; }
+.stat strong {
+display: block;
+font-family: ‘Fraunces’, serif;
+font-size: 20px;
+font-weight: 600;
+color: var(–ink);
+letter-spacing: 0;
+text-transform: none;
+margin-top: 2px;
+}
 
-  /* ============================================================
-     PAGE NAV (tabs for demo)
-     ============================================================ */
-  .page { display: none; animation: fadeIn 320ms ease; }
-  .page.active { display: block; }
-  @keyframes fadeIn { from { opacity:0; transform: translateY(4px); } to { opacity:1; transform:none; } }
+/* ========== SIDEBAR ========== */
+.sidebar {
+display: flex;
+flex-direction: column;
+gap: 20px;
+position: sticky;
+top: 24px;
+max-height: calc(100vh - 48px);
+}
 
-  /* ============================================================
-     TWEAKS PANEL
-     ============================================================ */
-  .tweaks-panel {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    width: 320px;
-    background: var(--bg-elev);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-lg);
-    padding: 18px;
-    z-index: 1000;
-    font-family: var(--font-body);
-    display: none;
-    max-height: calc(100vh - 48px);
-    overflow-y: auto;
-  }
-  .tweaks-panel.open { display: block; }
-  .tweaks-panel h4 {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 22px;
-    margin-bottom: 4px;
-  }
-  .tweaks-panel .sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
-  .tweak-row { margin-bottom: 14px; }
-  .tweak-row label {
-    display: block;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-subtle);
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-  .seg {
-    display: flex;
-    background: var(--bg-sunken);
-    border-radius: var(--r-sm);
-    padding: 3px;
-    gap: 2px;
-  }
-  .seg button {
-    flex: 1;
-    padding: 6px 8px;
-    border: none;
-    background: transparent;
-    font: inherit;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-muted);
-    border-radius: calc(var(--r-sm) - 2px);
-    cursor: pointer;
-    transition: background 120ms ease, color 120ms ease;
-  }
-  .seg button.active {
-    background: var(--bg-elev);
-    color: var(--text);
-    box-shadow: var(--shadow-sm);
-  }
-  .swatches { display: flex; gap: 6px; }
-  .swatches button {
-    flex: 1; aspect-ratio: 1; border-radius: var(--r-sm);
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 120ms ease;
-  }
-  .swatches button:hover { transform: scale(1.05); }
-  .swatches button.active { border-color: var(--text); }
+@media (max-width: 960px) {
+.sidebar { position: static; max-height: none; }
+}
 
-  /* Legal-page gutter for single-column layout */
-  .legal-page { max-width: 720px; margin: 0 auto; padding-top: 20px; }
+/* Score card */
+.score-card {
+background: var(–paper-warm);
+border: 1px solid rgba(42,35,31,0.12);
+border-radius: 2px;
+padding: 24px;
+display: grid;
+grid-template-columns: auto 1fr;
+gap: 20px;
+align-items: center;
+}
 
-  /* Recently used / greeting card strip */
-  .pickup-strip {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    margin-bottom: 48px;
-    padding-bottom: 4px;
-  }
-  .pickup {
-    min-width: 240px;
-    background: var(--bg-elev);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    padding: 14px 16px;
-    display: flex; align-items: center; gap: 12px;
-    cursor: pointer;
-    transition: border-color 160ms ease;
-  }
-  .pickup:hover { border-color: var(--accent); }
-  .pickup-text { display:flex; flex-direction:column; line-height:1.3; }
-  .pickup-text strong { font-size: 14px; font-weight: 600; }
-  .pickup-text span { font-size: 12px; color: var(--text-subtle); }
+.score-ring {
+width: 96px;
+height: 96px;
+position: relative;
+}
 
-  /* Utility */
-  .row { display: flex; gap: 12px; align-items: center; }
-  .stack { display: flex; flex-direction: column; gap: 8px; }
+.score-ring svg { transform: rotate(-90deg); }
+.score-ring .ring-bg { fill: none; stroke: rgba(42,35,31,0.08); stroke-width: 6; }
+.score-ring .ring-fg {
+fill: none;
+stroke: var(–accent);
+stroke-width: 6;
+stroke-linecap: round;
+transition: stroke-dashoffset 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), stroke 0.3s;
+}
+.score-ring .score-num {
+position: absolute;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: ‘Fraunces’, serif;
+font-weight: 600;
+font-size: 32px;
+color: var(–ink);
+letter-spacing: -0.02em;
+}
 
-  /* Tiny glyph icons via CSS/unicode — no custom SVG */
-  .glyph {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 400;
-  }
+.score-meta .score-label {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.15em;
+color: var(–ink-faint);
+margin-bottom: 4px;
+}
+.score-meta .score-grade {
+font-family: ‘Fraunces’, serif;
+font-weight: 600;
+font-size: 24px;
+color: var(–ink);
+line-height: 1.1;
+}
+.score-meta .score-detail {
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-size: 13px;
+color: var(–ink-soft);
+margin-top: 4px;
+}
+
+/* Filter chips */
+.filter-row {
+display: flex;
+gap: 6px;
+flex-wrap: wrap;
+}
+.chip {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+padding: 6px 10px;
+border: 1px solid rgba(42,35,31,0.15);
+border-radius: 2px;
+background: transparent;
+color: var(–ink-soft);
+cursor: pointer;
+transition: all 0.15s;
+}
+.chip.active {
+background: var(–ink);
+color: var(–paper);
+border-color: var(–ink);
+}
+.chip:hover:not(.active) {
+border-color: var(–ink);
+color: var(–ink);
+}
+.chip .count {
+font-weight: 600;
+margin-left: 4px;
+opacity: 0.7;
+}
+
+/* Error list */
+.issues-panel {
+background: var(–paper-warm);
+border: 1px solid rgba(42,35,31,0.12);
+border-radius: 2px;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+min-height: 200px;
+flex: 1;
+}
+
+.issues-head {
+padding: 14px 20px;
+border-bottom: 1px solid rgba(42,35,31,0.1);
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: rgba(239,231,215,0.4);
+}
+.issues-head h2 {
+font-family: ‘Fraunces’, serif;
+font-size: 18px;
+font-weight: 600;
+letter-spacing: -0.01em;
+}
+.issues-head .apply-all {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(–accent);
+background: transparent;
+border: 0;
+cursor: pointer;
+font-weight: 600;
+}
+.issues-head .apply-all:hover { text-decoration: underline; }
+.issues-head .apply-all:disabled {
+color: var(–ink-faint);
+cursor: not-allowed;
+text-decoration: none;
+}
+
+.issues-list {
+overflow-y: auto;
+max-height: 560px;
+}
+
+.issue {
+padding: 14px 20px;
+border-bottom: 1px solid rgba(42,35,31,0.08);
+cursor: pointer;
+transition: background 0.1s;
+}
+.issue:hover { background: rgba(42,35,31,0.03); }
+.issue.focused { background: rgba(184,49,30,0.06); border-left: 3px solid var(–accent); padding-left: 17px; }
+.issue:last-child { border-bottom: 0; }
+
+.issue-head {
+display: flex;
+justify-content: space-between;
+align-items: baseline;
+margin-bottom: 8px;
+gap: 8px;
+}
+
+.issue-category {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.12em;
+color: var(–ink-faint);
+font-weight: 600;
+}
+
+.sev-dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+display: inline-block;
+margin-right: 6px;
+vertical-align: middle;
+}
+.sev-dot.error { background: var(–accent); }
+.sev-dot.warning { background: var(–amber); }
+.sev-dot.style { background: var(–blue); }
+
+.issue-change {
+font-family: ‘Fraunces’, serif;
+font-size: 15px;
+line-height: 1.5;
+margin-bottom: 6px;
+}
+.issue-change del {
+text-decoration: line-through;
+text-decoration-color: var(–accent);
+text-decoration-thickness: 2px;
+color: var(–ink-soft);
+}
+.issue-change .arrow {
+color: var(–ink-faint);
+margin: 0 6px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 12px;
+}
+.issue-change ins {
+text-decoration: none;
+color: var(–green);
+font-weight: 600;
+background: rgba(74,124,60,0.08);
+padding: 1px 4px;
+border-radius: 2px;
+}
+
+.issue-message {
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-size: 13px;
+color: var(–ink-soft);
+line-height: 1.5;
+margin-bottom: 10px;
+}
+
+.issue-actions {
+display: flex;
+gap: 4px;
+}
+.issue-actions .btn {
+padding: 5px 10px;
+font-size: 10px;
+}
+
+.empty-state {
+padding: 60px 20px;
+text-align: center;
+color: var(–ink-faint);
+}
+.empty-state .big {
+font-family: ‘Fraunces’, serif;
+font-size: 48px;
+color: var(–ink);
+margin-bottom: 8px;
+line-height: 1;
+}
+.empty-state .msg {
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-size: 15px;
+color: var(–ink-soft);
+}
+
+/* Footer */
+footer {
+margin-top: 48px;
+padding-top: 24px;
+border-top: 1px solid rgba(42,35,31,0.15);
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 11px;
+color: var(–ink-faint);
+text-transform: uppercase;
+letter-spacing: 0.12em;
+display: flex;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 12px;
+}
+
+/* Legend */
+.legend {
+display: flex;
+gap: 16px;
+padding: 10px 16px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(–ink-faint);
+border-top: 1px solid rgba(42,35,31,0.08);
+background: rgba(239,231,215,0.3);
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-swatch { width: 20px; height: 3px; border-radius: 1px; }
+
+/* Scrollbar styling */
+.issues-list::-webkit-scrollbar,
+.editor-wrap .highlights::-webkit-scrollbar { width: 6px; }
+.issues-list::-webkit-scrollbar-thumb,
+.editor-wrap .highlights::-webkit-scrollbar-thumb {
+background: rgba(42,35,31,0.2);
+border-radius: 3px;
+}
 </style>
+
 </head>
 <body>
-
 <div class="app">
-
-  <!-- ================= SIDEBAR ================= -->
-  <aside class="sidebar" id="sidebar">
-    <a href="#" class="brand" data-nav="home">
-      <span class="clay-icon clay-accent sm">S</span>
-      <span class="brand-text">
-        <strong id="brandTitle">Student Tools</strong>
-        <span id="brandTag">Work smarter</span>
-      </span>
-    </a>
-
-    <!-- Nav content swaps per page -->
-    <div id="sidebarNav">
-      <!-- populated by JS -->
+  <header class="masthead">
+    <div class="title-block">
+      <h1>Grammar Blitz</h1>
+      <div class="tagline">A proprietary grammar engine — no APIs, no cloud, just rules.</div>
     </div>
-
-    <div class="sidebar-footer">
-      <a href="#" data-nav="contact">Contact</a> · 
-      <a href="#" data-nav="terms">Terms</a> · 
-      <a href="#" data-nav="privacy">Privacy</a><br>
-      © 2026 Student Tools
+    <div class="masthead-meta">
+      <div><strong>V. I</strong> · Est. 2026</div>
+      <div>Rules: <strong id="ruleCount">0</strong></div>
+      <div>Offline · Self-contained</div>
     </div>
-  </aside>
+  </header>
 
-  <!-- ================= CONTENT ================= -->
-  <main class="content">
-
-    <!-- ========== LANDING PAGE ========== -->
-    <section class="page active" id="page-home" data-screen-label="01 Home">
-      <div class="greet-row">
-        <div class="greet-chip">
-          <span class="clay-icon clay-butter xs glyph" id="greetingGlyph">☀</span>
-          <span id="greetingText">Good afternoon</span>
-        </div>
+  <main class="workspace">
+    <section class="editor-panel">
+      <div class="toolbar">
+        <button class="btn btn-primary" id="btnCheck">Run check</button>
+        <button class="btn" id="btnExample">Load example</button>
+        <button class="btn" id="btnClear">Clear</button>
+        <button class="btn btn-ghost" id="btnCopy">Copy corrected</button>
       </div>
 
-      <h1 class="page-title">Hey there — what are we <em>learning</em> today?</h1>
-      <p class="page-sub">Your calm, all-in-one toolkit for math, studying, writing, and music. Pick a category and dive in when you're ready.</p>
+```
+  <div class="editor-wrap">
+    <div class="highlights" id="highlights" aria-hidden="true"></div>
+    <textarea id="editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
+      placeholder="Paste or type your text here. The engine checks as you write."></textarea>
+  </div>
 
-      <!-- Pickup where you left off -->
-      <div class="pickup-strip">
-        <a class="pickup" href="#" data-nav="math">
-          <span class="clay-icon clay-math sm">∫</span>
-          <span class="pickup-text"><strong>Graphing Calculator</strong><span>Picked up yesterday</span></span>
-        </a>
-        <a class="pickup" href="#" data-nav="study">
-          <span class="clay-icon clay-study sm">♤</span>
-          <span class="pickup-text"><strong>Flashcards · Biology</strong><span>82% mastered</span></span>
-        </a>
-        <a class="pickup" href="#" data-nav="writing">
-          <span class="clay-icon clay-writing sm">✎</span>
-          <span class="pickup-text"><strong>Grammar Checker</strong><span>Recent essay draft</span></span>
-        </a>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-swatch" style="background: var(--accent)"></span>Error</div>
+    <div class="legend-item"><span class="legend-swatch" style="background: var(--amber)"></span>Warning</div>
+    <div class="legend-item"><span class="legend-swatch" style="background: var(--blue)"></span>Style</div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">Words <strong id="statWords">0</strong></div>
+    <div class="stat">Sentences <strong id="statSents">0</strong></div>
+    <div class="stat">Characters <strong id="statChars">0</strong></div>
+    <div class="stat">Read time <strong id="statRead">0s</strong></div>
+    <div class="stat">Grade level <strong id="statGrade">—</strong></div>
+  </div>
+</section>
+
+<aside class="sidebar">
+  <div class="score-card">
+    <div class="score-ring">
+      <svg width="96" height="96" viewBox="0 0 96 96">
+        <circle class="ring-bg" cx="48" cy="48" r="42"/>
+        <circle class="ring-fg" cx="48" cy="48" r="42"
+          stroke-dasharray="263.89" stroke-dashoffset="0" id="ringFg"/>
+      </svg>
+      <div class="score-num" id="scoreNum">100</div>
+    </div>
+    <div class="score-meta">
+      <div class="score-label">Grammar score</div>
+      <div class="score-grade" id="scoreGrade">Pristine</div>
+      <div class="score-detail" id="scoreDetail">No text to evaluate.</div>
+    </div>
+  </div>
+
+  <div class="filter-row" id="filterRow">
+    <button class="chip active" data-filter="all">All <span class="count" id="countAll">0</span></button>
+    <button class="chip" data-filter="error">Errors <span class="count" id="countError">0</span></button>
+    <button class="chip" data-filter="warning">Warnings <span class="count" id="countWarning">0</span></button>
+    <button class="chip" data-filter="style">Style <span class="count" id="countStyle">0</span></button>
+  </div>
+
+  <div class="issues-panel">
+    <div class="issues-head">
+      <h2>Suggestions</h2>
+      <button class="apply-all" id="btnApplyAll" disabled>Apply all fixes →</button>
+    </div>
+    <div class="issues-list" id="issuesList">
+      <div class="empty-state">
+        <div class="big">✓</div>
+        <div class="msg">Start writing to see suggestions.</div>
       </div>
-
-      <div class="tool-grid two" style="grid-template-columns: repeat(2, 1fr); max-width:none;">
-        <a class="tool-card cat-card" href="#" data-nav="math">
-          <span class="clay-icon clay-math">∑</span>
-          <span class="kicker">15 tools · Solve smarter</span>
-          <h3>Math Tools</h3>
-          <p>Equation solvers, graphing calculator, derivatives, integrals, statistics, trigonometry, and more. From Algebra through AP Calculus BC.</p>
-          <span class="count">Open Math Tools</span>
-        </a>
-        <a class="tool-card cat-card" href="#" data-nav="study">
-          <span class="clay-icon clay-study">✦</span>
-          <span class="kicker">4 tools · Study smarter</span>
-          <h3>Studying Tools</h3>
-          <p>Create flashcard decks, build custom quizzes with multiple choice and true/false questions, and drill concepts until they stick.</p>
-          <span class="count">Open Studying Tools</span>
-        </a>
-        <a class="tool-card cat-card" href="#" data-nav="music">
-          <span class="clay-icon clay-music">♪</span>
-          <span class="kicker">2 tools · Play better</span>
-          <h3>Music Tools</h3>
-          <p>A toolkit for band and orchestra — multi-tempo metronomes, count-ins, and a sheet music creator you can export as PNG or SVG.</p>
-          <span class="count">Open Music Tools</span>
-        </a>
-        <a class="tool-card cat-card" href="#" data-nav="writing">
-          <span class="clay-icon clay-writing">✎</span>
-          <span class="kicker">1 tool · Write smarter</span>
-          <h3>Writing Tools</h3>
-          <p>Polish essays and assignments. Paste or write, and catch grammar, spelling, punctuation, and style issues before you submit.</p>
-          <span class="count">Open Writing Tools</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- ========== MATH PAGE ========== -->
-    <section class="page" id="page-math" data-screen-label="02 Math">
-      <a class="back-link" data-nav="home">← Back to Student Tools</a>
-      <h1 class="page-title">Math <em>Tools</em></h1>
-      <p class="page-sub">Your playbook for every course — from Algebraic Problem Solving to AP Calculus BC &amp; Statistics.</p>
-
-      <!-- Algebra -->
-      <div class="section-group">
-        <div class="section-head">
-          <h2>Algebra</h2>
-          <span class="count-chip">4 tools</span>
-        </div>
-        <div class="tool-grid">
-          <a class="tool-card" href="#">
-            <span class="clay-icon clay-math">△</span>
-            <div class="tags"><span class="tag">Math 1</span><span class="tag">Algebraic Problem Solving</span></div>
-            <h3>Linear Equations</h3>
-            <p>Solve ax + b = c with step-by-step breakdowns that show every move.</p>
-          </a>
-          <a class="tool-card" href="#">
-            <span class="clay-icon clay-butter">◈</span>
-            <div class="tags"><span class="tag">Math 2</span><span class="tag">Math 3</span></div>
-            <h3>Quadratic Solver</h3>
-            <p>Find roots, vertex, axis of symmetry, and discriminant in one view.</p>
-          </a>
-          <a class="tool-card" href="#">
-            <span class="clay-icon clay-rose">∞</span>
-            <div class="tags"><span class="tag">Math 1</span><span class="tag">Math 2</span></div>
-            <h3>Systems of Equations</h3>
-            <p>Solve 2×2 and 3×3 systems via elimination or substitution.</p>
-          </a>
-          <a class="tool-card" href="#">
-            <span class="clay-icon clay-study">▤</span>
-            <div class="tags"><span class="tag">Math 2</span><span class="tag">Advanced Math 2</span></div>
-            <h3>Polynomial Tools</h3>
-            <p>Factor, evaluate, and find roots of polynomials.</p>
-          </a>
-        </div>
-      </div>
-
-      <!-- Functions & Graphing -->
-      <div class="section-group">
-        <div class="section-head">
-          <h2>Functions &amp; Graphing</h2>
-          <span class="count-chip">2 tools</span>
-        </div>
-        <div class="tool-grid">
-          <a class="tool-card" href="#">
-            <span class="clay-icon clay-music">∿</span>
-            <div class="tags"><span class="tag">All courses</span></div>
-            <h3>Graphing Calculator</h3>
-            <p>Plot any function on a full interactive canvas.</p>
-          </a>
-          <a class="tool-card" href="#">
-            <span class="clay-icon clay-writing">log</span>
-            <div class="tags"><span class="tag">Math 3</span><span class="tag">AP Pre-Calculus</span></div>
-            <h3>Logarithm Calculator</h3>
-            <p>Compute logs in any base and convert between forms.</p>
-          </a>
-        </div>
-      </div>
-
-      <!-- Trigonometry -->
-      <div class="section-group">
-        <div class="section-head">
-          <h2>Trigonometry</h2>
-          <span class="count-chip">3 tools</span>
-        </div>
-        <div class="tool-grid">
-          <a class="tool-card" href="#">
-            <span class="clay-icon clay-math">sin</span>
-            <div class="tags"><span class="tag">Math 2</span><span class="tag">Math 3</span><span class="tag">AP Pre-Calculus</span></div>
-            <h3>Trig Calculator</h3>
-            <p>All six trig functions, conversions, and identities.</p>
-          </a>
-          <a class="tool-card" href="#">
-            <span class="clay-icon clay-rose">◉</span>
-            <div class="tags"><span class="tag">Math 3</span><span class="tag">AP Pre-Calculus</span></div>
-            <h3>Unit Circle</h3>
-            <p>Interactive unit circle with exact values.</p>
-          </a>
-          <a class="tool-card" href="#">
-            <span class="clay-icon clay-butter">→</span>
-            <div class="tags"><span class="tag">AP Calculus AB</span><span class="tag">BC</span></div>
-            <h3>Limits</h3>
-            <p>Evaluate limits numerically from both sides.</p>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== MUSIC PAGE ========== -->
-    <section class="page" id="page-music" data-screen-label="03 Music">
-      <a class="back-link" data-nav="home">← Back to Student Tools</a>
-      <h1 class="page-title">Music <em>Tools</em></h1>
-      <p class="page-sub">Your toolkit for band and orchestra — tempo and notation, all in one place.</p>
-
-      <div class="tool-grid two">
-        <a class="tool-card" href="#">
-          <span class="clay-icon clay-music">♪</span>
-          <div class="tags"><span class="tag">Rhythm</span><span class="tag">All Ensembles</span></div>
-          <h3>Band Metronome</h3>
-          <p>Multi-tempo metronome with tempo changes, count-ins, and a visual timeline. Set your whole song's tempo map and play through it.</p>
-        </a>
-        <a class="tool-card" href="#">
-          <span class="clay-icon clay-writing">♯</span>
-          <div class="tags"><span class="tag">Notation</span><span class="tag">Composition</span></div>
-          <h3>Sheet Music Creator</h3>
-          <p>Build sheet music note by note. Pick your clef, key, and time signature, then add notes and rests. Download as PNG or SVG.</p>
-        </a>
-      </div>
-    </section>
-
-    <!-- ========== STUDY PAGE ========== -->
-    <section class="page" id="page-study" data-screen-label="04 Studying">
-      <a class="back-link" data-nav="home">← Back to Student Tools</a>
-      <h1 class="page-title">Studying <em>Tools</em></h1>
-      <p class="page-sub">Create flashcards, build quizzes, and master your material at your own pace.</p>
-
-      <div class="tool-grid three">
-        <a class="tool-card" href="#">
-          <span class="clay-icon clay-study">♤</span>
-          <div class="tags"><span class="tag">Study Tools</span></div>
-          <h3>Flashcards</h3>
-          <p>Create decks, flip cards, and drill concepts with shuffle mode.</p>
-        </a>
-        <a class="tool-card" href="#">
-          <span class="clay-icon clay-butter">✎</span>
-          <div class="tags"><span class="tag">Study Tools</span></div>
-          <h3>Quiz Maker</h3>
-          <p>Build custom quizzes with multiple choice &amp; true/false questions. Shuffle-ready.</p>
-        </a>
-        <a class="tool-card" href="#">
-          <span class="clay-icon clay-rose">▶</span>
-          <div class="tags"><span class="tag">Study Tools</span></div>
-          <h3>Game Study</h3>
-          <p>Turn your questions into an arcade-style challenge. Beat the clock and chase high scores.</p>
-        </a>
-        <a class="tool-card" href="#">
-          <span class="clay-icon clay-music">⏱</span>
-          <div class="tags"><span class="tag">Study Tools</span></div>
-          <h3>Study Time Tracker</h3>
-          <p>Track focused sessions and see where your hours actually go.</p>
-        </a>
-      </div>
-    </section>
-
-    <!-- ========== WRITING PAGE ========== -->
-    <section class="page" id="page-writing" data-screen-label="05 Writing">
-      <a class="back-link" data-nav="home">← Back to Student Tools</a>
-      <h1 class="page-title">Writing <em>Tools</em></h1>
-      <p class="page-sub">Polish your essays and assignments with tools that catch what you miss.</p>
-
-      <div class="tool-grid two">
-        <a class="tool-card" href="#">
-          <span class="clay-icon clay-writing">✎</span>
-          <div class="tags"><span class="tag">Writing Tools</span></div>
-          <h3>Grammar Checker</h3>
-          <p>Paste or write your essay — catch grammar, spelling, and style issues before you submit.</p>
-        </a>
-      </div>
-    </section>
-
-    <!-- ========== CONTACT PAGE ========== -->
-    <section class="page" id="page-contact" data-screen-label="06 Contact">
-      <div class="legal-page">
-        <a class="back-link" data-nav="home">← Back to Student Tools</a>
-        <h1 class="page-title" style="font-size:44px;"><em>Contact</em> us</h1>
-        <p class="page-sub">We read every message. Usually reply within a day or two.</p>
-
-        <div class="contact-card">
-          <span class="clay-icon clay-accent">@</span>
-          <div>
-            <h4>General questions &amp; bug reports</h4>
-            <p>Stuck on something? Found a glitch? Got a feature idea? Let us know.</p>
-            <a class="email" href="mailto:support@tools-for-student.com">support@tools-for-student.com</a>
-          </div>
-        </div>
-
-        <div class="contact-card">
-          <span class="clay-icon clay-butter">✦</span>
-          <div>
-            <h4>Send us a picture of George Kittle</h4>
-            <p>We are, inexplicably, still accepting these.</p>
-            <a class="email" href="mailto:kittle@tools-for-student.com">kittle@tools-for-student.com</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== TERMS PAGE ========== -->
-    <section class="page" id="page-terms" data-screen-label="07 Terms">
-      <div class="legal-page">
-        <a class="back-link" data-nav="home">← Back to Student Tools</a>
-        <h1 class="page-title" style="font-size:44px;"><em>Terms</em> of Service</h1>
-        <div class="prose">
-          <p class="updated">Last updated: March 27, 2026</p>
-          <p>Welcome to Student Tools ("we," "us," or "our"). By accessing or using our website at studenttools (the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, please don't use the Service.</p>
-
-          <h2>1. Acceptance of Terms</h2>
-          <p>By using the Service, you confirm that you are at least 13 years of age (or the minimum age required in your jurisdiction) and agree to comply with these Terms. If you are under 18, you represent that you have parental or guardian consent to use the Service.</p>
-
-          <h2>2. Description of Service</h2>
-          <p>Student Tools provides free, browser-based mathematical calculators, solvers, educational tools, flashcard creators, quiz builders, and writing tools (including a grammar checker) designed to assist students in coursework ranging from Algebraic Problem Solving through AP Calculus BC and AP Statistics, as well as general academic writing.</p>
-          <p>The Service includes study tools that allow you to create, store, and review flashcard decks and custom quizzes, and writing tools that check grammar, spelling, punctuation, and style. The Service is provided on an "as is" and "as available" basis.</p>
-
-          <h2>3. User-Created Content</h2>
-          <p>The study tools (Flashcards and Quiz Maker) allow you to create and store content locally on your device. You own what you create. We don't claim rights to your decks, quizzes, or notes.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== PRIVACY PAGE ========== -->
-    <section class="page" id="page-privacy" data-screen-label="08 Privacy">
-      <div class="legal-page">
-        <a class="back-link" data-nav="home">← Back to Student Tools</a>
-        <h1 class="page-title" style="font-size:44px;"><em>Privacy</em> Policy</h1>
-        <div class="prose">
-          <p class="updated">Last updated: April 18, 2026</p>
-
-          <div class="callout">
-            <strong>2026 Compliance Notice:</strong> This Privacy Policy has been updated to comply with the comprehensive data protection requirements of 2026, including CCPA/CPRA, GDPR, state privacy laws (Colorado CPA, Connecticut CTDPA, Virginia VCDPA, Utah UCPA, Florida FDBR, Montana MTCDPA, Delaware DPDP, Nevada NDAP), Google AdSense requirements, and AI/ML transparency standards.
-          </div>
-
-          <p>Student Tools ("we," "us," or "our") respects your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website (the "Service"). Please read carefully. By using the Service, you consent to the practices described here.</p>
-
-          <h2>1. Information We Collect</h2>
-          <p><strong>Information Collected Automatically:</strong> When you access the Service, certain information may be collected automatically, including your IP address, browser type and version, operating system, referring URLs, pages viewed, time spent on pages, and the date and time of your visit. This information is collected via server logs and analytics tools.</p>
-          <p><strong>Cookies and Tracking Technologies:</strong> We and our third-party partners (including advertising partners such as Google AdSense) may use cookies, web beacons, pixels, and similar tracking technologies to collect information about your browsing activity. Cookies are small data files stored on your device. You can control cookies through your browser settings, but disabling cookies may affect the functionality of the Service.</p>
-        </div>
-      </div>
-    </section>
+    </div>
+  </div>
+</aside>
+```
 
   </main>
+
+  <footer>
+    <div>Hardcoded engine · Pattern-based · ~<span id="ruleCount2">0</span> rules</div>
+    <div>Zero network · Zero dependencies · One file</div>
+  </footer>
 </div>
-
-<!-- ================= TWEAKS PANEL ================= -->
-<div class="tweaks-panel" id="tweaksPanel">
-  <h4>Tweaks</h4>
-  <div class="sub">Adjust colors, type, and density live.</div>
-
-  <!-- THEME -->
-  <div class="tweak-section-label">Theme</div>
-  <div class="tweak-row">
-    <div class="seg" data-tweak="theme">
-      <button data-val="light">Light</button>
-      <button data-val="dark">Dark</button>
-    </div>
-  </div>
-
-  <!-- SITE PALETTE -->
-  <div class="tweak-section-label">Site palette</div>
-  <div class="tweak-row">
-    <div class="palette-grid" data-tweak="sitePalette">
-      <button data-val="cream"   title="Warm Cream"><span style="background:#FBF8F3"></span><span style="background:#F7F2EA"></span><span style="background:#EADFD0"></span><em>Cream</em></button>
-      <button data-val="linen"   title="Linen"><span style="background:#F8F4ED"></span><span style="background:#F0E9DC"></span><span style="background:#D6C8B0"></span><em>Linen</em></button>
-      <button data-val="slate"   title="Cool Slate"><span style="background:#F3F5F7"></span><span style="background:#E8EDF1"></span><span style="background:#C8D2DB"></span><em>Slate</em></button>
-      <button data-val="mist"    title="Sage Mist"><span style="background:#F2F5F1"></span><span style="background:#E6EDE4"></span><span style="background:#C4D4BF"></span><em>Mist</em></button>
-      <button data-val="dusk"    title="Warm Dusk"><span style="background:#1A1714"></span><span style="background:#231F1B"></span><span style="background:#4A3B2C"></span><em>Dusk</em></button>
-      <button data-val="midnight" title="Midnight"><span style="background:#13141A"></span><span style="background:#1C1E27"></span><span style="background:#2E3347"></span><em>Night</em></button>
-    </div>
-  </div>
-
-  <!-- LOGO COLORS -->
-  <div class="tweak-section-label">Logo colors</div>
-
-  <div class="tweak-row logo-row">
-    <span class="logo-label">Math</span>
-    <div class="logo-swatches" data-logo="logoMath">
-      <button data-color="#F5C9A8" style="background:#F5C9A8" title="Peach"></button>
-      <button data-color="#F4DA8A" style="background:#F4DA8A" title="Butter"></button>
-      <button data-color="#EEBFB8" style="background:#EEBFB8" title="Rose"></button>
-      <button data-color="#B8D4E3" style="background:#B8D4E3" title="Sky"></button>
-      <button data-color="#B5C9A8" style="background:#B5C9A8" title="Sage"></button>
-      <button data-color="#CBC0E2" style="background:#CBC0E2" title="Lilac"></button>
-      <button data-color="#D4C4B0" style="background:#D4C4B0" title="Stone"></button>
-      <button data-color="#F0C4D4" style="background:#F0C4D4" title="Blush"></button>
-    </div>
-  </div>
-
-  <div class="tweak-row logo-row">
-    <span class="logo-label">Study</span>
-    <div class="logo-swatches" data-logo="logoStudy">
-      <button data-color="#F5C9A8" style="background:#F5C9A8" title="Peach"></button>
-      <button data-color="#F4DA8A" style="background:#F4DA8A" title="Butter"></button>
-      <button data-color="#EEBFB8" style="background:#EEBFB8" title="Rose"></button>
-      <button data-color="#B8D4E3" style="background:#B8D4E3" title="Sky"></button>
-      <button data-color="#B5C9A8" style="background:#B5C9A8" title="Sage"></button>
-      <button data-color="#CBC0E2" style="background:#CBC0E2" title="Lilac"></button>
-      <button data-color="#D4C4B0" style="background:#D4C4B0" title="Stone"></button>
-      <button data-color="#F0C4D4" style="background:#F0C4D4" title="Blush"></button>
-    </div>
-  </div>
-
-  <div class="tweak-row logo-row">
-    <span class="logo-label">Music</span>
-    <div class="logo-swatches" data-logo="logoMusic">
-      <button data-color="#F5C9A8" style="background:#F5C9A8" title="Peach"></button>
-      <button data-color="#F4DA8A" style="background:#F4DA8A" title="Butter"></button>
-      <button data-color="#EEBFB8" style="background:#EEBFB8" title="Rose"></button>
-      <button data-color="#B8D4E3" style="background:#B8D4E3" title="Sky"></button>
-      <button data-color="#B5C9A8" style="background:#B5C9A8" title="Sage"></button>
-      <button data-color="#CBC0E2" style="background:#CBC0E2" title="Lilac"></button>
-      <button data-color="#D4C4B0" style="background:#D4C4B0" title="Stone"></button>
-      <button data-color="#F0C4D4" style="background:#F0C4D4" title="Blush"></button>
-    </div>
-  </div>
-
-  <div class="tweak-row logo-row">
-    <span class="logo-label">Writing</span>
-    <div class="logo-swatches" data-logo="logoWriting">
-      <button data-color="#F5C9A8" style="background:#F5C9A8" title="Peach"></button>
-      <button data-color="#F4DA8A" style="background:#F4DA8A" title="Butter"></button>
-      <button data-color="#EEBFB8" style="background:#EEBFB8" title="Rose"></button>
-      <button data-color="#B8D4E3" style="background:#B8D4E3" title="Sky"></button>
-      <button data-color="#B5C9A8" style="background:#B5C9A8" title="Sage"></button>
-      <button data-color="#CBC0E2" style="background:#CBC0E2" title="Lilac"></button>
-      <button data-color="#D4C4B0" style="background:#D4C4B0" title="Stone"></button>
-      <button data-color="#F0C4D4" style="background:#F0C4D4" title="Blush"></button>
-    </div>
-  </div>
-
-  <div class="tweak-row logo-row">
-    <span class="logo-label">Brand</span>
-    <div class="logo-swatches" data-logo="logoBrand">
-      <button data-color="#F5C9A8" style="background:#F5C9A8" title="Peach"></button>
-      <button data-color="#F4DA8A" style="background:#F4DA8A" title="Butter"></button>
-      <button data-color="#EEBFB8" style="background:#EEBFB8" title="Rose"></button>
-      <button data-color="#B8D4E3" style="background:#B8D4E3" title="Sky"></button>
-      <button data-color="#B5C9A8" style="background:#B5C9A8" title="Sage"></button>
-      <button data-color="#CBC0E2" style="background:#CBC0E2" title="Lilac"></button>
-      <button data-color="#D4C4B0" style="background:#D4C4B0" title="Stone"></button>
-      <button data-color="#F0C4D4" style="background:#F0C4D4" title="Blush"></button>
-    </div>
-  </div>
-
-</div>
-
-<style>
-  .tweak-section-label {
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--text-subtle);
-    font-weight: 700;
-    margin: 14px 0 6px;
-    font-family: var(--font-body);
-  }
-  .tweak-row { margin-bottom: 8px; }
-
-  /* Palette grid — 2 cols, each shows 3 stacked swatches + label */
-  .palette-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-  }
-  .palette-grid button {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 6px;
-    border-radius: var(--r-sm);
-    border: 2px solid transparent;
-    background: var(--bg-sunken);
-    cursor: pointer;
-    transition: border-color 120ms ease, transform 120ms ease;
-    align-items: center;
-  }
-  .palette-grid button:hover { transform: scale(1.04); }
-  .palette-grid button.active { border-color: var(--text); }
-  .palette-grid button span {
-    display: block;
-    width: 100%;
-    height: 10px;
-    border-radius: 3px;
-  }
-  .palette-grid button em {
-    font-style: normal;
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 3px;
-    font-family: var(--font-body);
-  }
-
-  /* Logo color rows */
-  .logo-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .logo-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    width: 44px;
-    flex-shrink: 0;
-    font-family: var(--font-body);
-  }
-  .logo-swatches {
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-  }
-  .logo-swatches button {
-    width: 22px;
-    height: 22px;
-    border-radius: var(--r-sm);
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 120ms ease, border-color 120ms ease;
-    flex-shrink: 0;
-  }
-  .logo-swatches button:hover { transform: scale(1.15); }
-  .logo-swatches button.active { border-color: var(--text); }
-</style>
 
 <script>
-  /* ================================================
-     SITE PALETTE PRESETS
-     ================================================ */
-  const PALETTES = {
-    cream:    { bg:"#FBF8F3", elev:"#FFFFFF", sunken:"#F4EEE4", sidebar:"#F7F2EA", border:"#EADFD0", borderStrong:"#D9CAB3", text:"#2A2620", muted:"#746B5E", subtle:"#A59985", shadowMd:"0 4px 14px rgba(60,40,10,0.06)", shadowLg:"0 12px 32px rgba(60,40,10,0.08)", dark:false },
-    linen:    { bg:"#F8F4ED", elev:"#FFFDF8", sunken:"#EFE8DC", sidebar:"#F1EAE0", border:"#DDD0BC", borderStrong:"#C9B89E", text:"#2C2519", muted:"#786D5E", subtle:"#A8987E", shadowMd:"0 4px 14px rgba(60,40,10,0.07)", shadowLg:"0 12px 32px rgba(60,40,10,0.09)", dark:false },
-    slate:    { bg:"#F3F5F7", elev:"#FFFFFF", sunken:"#E8EDF1", sidebar:"#EDF0F3", border:"#D0D8E0", borderStrong:"#B8C4CE", text:"#1E2630", muted:"#526070", subtle:"#8A9CAC", shadowMd:"0 4px 14px rgba(20,40,60,0.07)", shadowLg:"0 12px 32px rgba(20,40,60,0.09)", dark:false },
-    mist:     { bg:"#F2F5F1", elev:"#FAFCF9", sunken:"#E4EDE2", sidebar:"#EBF0E9", border:"#C8D8C4", borderStrong:"#ADBFA9", text:"#1E2A1E", muted:"#506050", subtle:"#88A084", shadowMd:"0 4px 14px rgba(20,50,20,0.06)", shadowLg:"0 12px 32px rgba(20,50,20,0.08)", dark:false },
-    dusk:     { bg:"#1A1714", elev:"#231F1B", sunken:"#14110E", sidebar:"#1F1B17", border:"#33291F", borderStrong:"#4A3B2C", text:"#F4ECE0", muted:"#B8AC9A", subtle:"#7A6F60", shadowMd:"0 4px 14px rgba(0,0,0,0.35)", shadowLg:"0 12px 32px rgba(0,0,0,0.5)", dark:true },
-    midnight: { bg:"#13141A", elev:"#1C1E27", sunken:"#0E0F14", sidebar:"#171920", border:"#252836", borderStrong:"#353A50", text:"#EDF0F8", muted:"#A8AEBF", subtle:"#606678", shadowMd:"0 4px 14px rgba(0,0,0,0.4)",  shadowLg:"0 12px 32px rgba(0,0,0,0.6)",  dark:true },
-  };
+/* ============================================================
+   GRAMMAR BLITZ — PROPRIETARY GRAMMAR ENGINE
+   A pattern-based, fully self-contained grammar checker.
+   ============================================================ */
 
-  /* ================================================
-     APPLY TWEAKS + PERSIST
-     ================================================ */
-  const root = document.documentElement;
-  const STORAGE_KEY = "stu-tools-tweaks-v2";
-  let state = { ...TWEAKS };
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if (saved) state = { ...state, ...saved };
-  } catch(e){}
+/* ------------------------------------------------------------
+   1. DATA: common misspellings (unambiguous)
+   ------------------------------------------------------------ */
+const MISSPELLINGS = {
+  'absense':'absence','accomodate':'accommodate','acheive':'achieve','acheived':'achieved',
+  'acheiving':'achieving','acheivement':'achievement','acheivements':'achievements',
+  'accross':'across','adress':'address','adresses':'addresses','agressive':'aggressive',
+  'alot':'a lot','arguement':'argument','arguements':'arguments','basicly':'basically',
+  'beleive':'believe','beleived':'believed','beleives':'believes','beleiving':'believing',
+  'buisness':'business','buisnesses':'businesses','calender':'calendar','cemetary':'cemetery',
+  'changable':'changeable','collegue':'colleague','collegues':'colleagues','comittee':'committee',
+  'completly':'completely','concious':'conscious','curiousity':'curiosity','definate':'definite',
+  'definately':'definitely','dilemna':'dilemma','dissapoint':'disappoint','dissapointed':'disappointed',
+  'dissapointing':'disappointing','dissappear':'disappear','embarass':'embarrass','embarassed':'embarrassed',
+  'embarassing':'embarrassing','embarassment':'embarrassment','enviroment':'environment',
+  'enviroments':'environments','exagerate':'exaggerate','exagerated':'exaggerated','excelent':'excellent',
+  'existance':'existence','experiance':'experience','experianced':'experienced','experiances':'experiences',
+  'facinating':'fascinating','feild':'field','feilds':'fields','finaly':'finally','flourescent':'fluorescent',
+  'foriegn':'foreign','fourty':'forty','freind':'friend','freinds':'friends','freindly':'friendly',
+  'fullfil':'fulfill','goverment':'government','grammer':'grammar','gratefull':'grateful',
+  'happend':'happened','happended':'happened','harrass':'harass','harrassment':'harassment',
+  'heigth':'height','hieght':'height','hygene':'hygiene','hypocrit':'hypocrite','imediate':'immediate',
+  'immediatly':'immediately','independant':'independent','independance':'independence',
+  'indispensible':'indispensable','interupt':'interrupt','irrelevent':'irrelevant','knowlege':'knowledge',
+  'knowledgable':'knowledgeable','liason':'liaison','libary':'library','liesure':'leisure',
+  'maintainance':'maintenance','maintenence':'maintenance','managable':'manageable','millenium':'millennium',
+  'miniscule':'minuscule','mischevious':'mischievous','neccessary':'necessary','necesary':'necessary',
+  'noticable':'noticeable','occassion':'occasion','occassional':'occasional','occassionally':'occasionally',
+  'occured':'occurred','occurence':'occurrence','occuring':'occurring','opertunity':'opportunity',
+  'oppertunity':'opportunity','paralel':'parallel','parliment':'parliament','particuarly':'particularly',
+  'perseverence':'perseverance','persistant':'persistent','posession':'possession','possesion':'possession',
+  'prefered':'preferred','privelege':'privilege','priviledge':'privilege','probally':'probably',
+  'probly':'probably','pronounciation':'pronunciation','publically':'publicly','realy':'really',
+  'recieve':'receive','recieved':'received','recieves':'receives','recieving':'receiving',
+  'reccomend':'recommend','reccommend':'recommend','recomend':'recommend','recomended':'recommended',
+  'refered':'referred','referance':'reference','relevent':'relevant','religous':'religious',
+  'remeber':'remember','remebered':'remembered','resistence':'resistance','responsability':'responsibility',
+  'rythm':'rhythm','seperate':'separate','seperated':'separated','seperately':'separately',
+  'seperation':'separation','sieze':'seize','seige':'siege','similiar':'similar','sincerly':'sincerely',
+  'suprise':'surprise','suprised':'surprised','suprising':'surprising','supercede':'supersede',
+  'tendancy':'tendency','thier':'their','throughly':'thoroughly','tommorow':'tomorrow',
+  'tommorrow':'tomorrow','tounge':'tongue','truely':'truly','tryed':'tried','unecessary':'unnecessary',
+  'untill':'until','vaccum':'vacuum','villian':'villain','visable':'visible','wether':'whether',
+  'wierd':'weird','writting':'writing','yeild':'yield','allready':'already','usualy':'usually',
+  'whith':'with','teh':'the','thign':'thing','becuase':'because','becuse':'because',
+  'wich':'which','waite':'wait','gratefull':'grateful','greatful':'grateful','carrer':'career',
+  'carreer':'career','garantee':'guarantee','gaurantee':'guarantee','goin':'going',
+  'exept':'except','execption':'exception','facist':'fascist','pharoah':'pharaoh',
+  'pharoh':'pharaoh','realized':'realized','realise':'realize','recognise':'recognize',
+  'bussiness':'business','cuz':'because','gunna':'going to','wanna':'want to',
+  'gonna':'going to','dunno':"don't know",'kinda':'kind of','sorta':'sort of',
+  'outta':'out of','lotta':'lot of','hafta':'have to','gotta':'got to',
+  'mispell':'misspell','beatiful':'beautiful','beutiful':'beautiful','artic':'arctic',
+  'athiest':'atheist','candidiate':'candidate','cemetary':'cemetery','concensus':'consensus',
+  'consious':'conscious','desparate':'desperate','desireable':'desirable','ecstacy':'ecstasy',
+  'embarass':'embarrass','fourty':'forty','greatful':'grateful','hampster':'hamster',
+  'inate':'innate','innoculate':'inoculate','intresting':'interesting','intrest':'interest',
+  'jewelery':'jewelry','judgement':'judgment','liesure':'leisure','lightening':'lightning',
+  'momento':'memento','pasttime':'pastime','perseverence':'perseverance','potatoe':'potato',
+  'tomatoe':'tomato','rediculous':'ridiculous','riduculous':'ridiculous','schedual':'schedule',
+  'supercede':'supersede','threshhold':'threshold','vengence':'vengeance','accross':'across',
+  'addtional':'additional','apparant':'apparent','appearence':'appearance','arguement':'argument',
+  'begining':'beginning','benifit':'benefit','betweeen':'between','committment':'commitment',
+  'completly':'completely','conceed':'concede','dependant':'dependent','developement':'development',
+  'diffrent':'different','equiptment':'equipment','excersise':'exercise','exerpt':'excerpt',
+  'existance':'existence','familer':'familiar','finaly':'finally','flexable':'flexible',
+  'goverment':'government','grammer':'grammar','happend':'happened','hierachy':'hierarchy',
+  'humerous':'humorous','imediately':'immediately','incedent':'incident','intellegent':'intelligent',
+  'knowlege':'knowledge','labratory':'laboratory','lenght':'length','liscense':'license',
+  'licence':'license','loneley':'lonely','medeval':'medieval','miniture':'miniature',
+  'mispell':'misspell','neccessary':'necessary','neice':'niece','nieghbor':'neighbor',
+  'occassion':'occasion','occurence':'occurrence','oficial':'official','opression':'oppression',
+  'paralell':'parallel','parralel':'parallel','peice':'piece','pidgeon':'pigeon',
+  'playright':'playwright','pleasent':'pleasant','posession':'possession','potatoe':'potato',
+  'prefered':'preferred','prescence':'presence','priviledge':'privilege','probaly':'probably',
+  'professer':'professor','promiss':'promise','questionaire':'questionnaire','recieve':'receive',
+  'relevent':'relevant','religous':'religious','remeber':'remember','rember':'remember',
+  'sargent':'sergeant','secratary':'secretary','sence':'sense','seperate':'separate',
+  'sieze':'seize','siezed':'seized','similiar':'similar','sincerly':'sincerely','sissors':'scissors',
+  'strenght':'strength','strengh':'strength','succesful':'successful','succesfully':'successfully',
+  'succesion':'succession','sufficent':'sufficient','supposably':'supposedly','tatoo':'tattoo',
+  'temperture':'temperature','themselfs':'themselves','tho':'though','thourough':'thorough',
+  'tounge':'tongue','tradgedy':'tragedy','truely':'truly','twelth':'twelfth','tyrany':'tyranny',
+  'underate':'underrate','unfortunatly':'unfortunately','unnatrual':'unnatural','useage':'usage',
+  'vaccume':'vacuum','vaccuum':'vacuum','vegtable':'vegetable','vengance':'vengeance',
+  'visable':'visible','volentary':'voluntary','wether':'whether','whereever':'wherever',
+  'wholy':'wholly','withold':'withhold','yatch':'yacht','yeilded':'yielded','youself':'yourself'
+};
 
-  function applyPalette(p) {
-    const s = root.style;
-    s.setProperty("--bg",            p.bg);
-    s.setProperty("--bg-elev",       p.elev);
-    s.setProperty("--bg-sunken",     p.sunken);
-    s.setProperty("--bg-sidebar",    p.sidebar);
-    s.setProperty("--border",        p.border);
-    s.setProperty("--border-strong", p.borderStrong);
-    s.setProperty("--text",          p.text);
-    s.setProperty("--text-muted",    p.muted);
-    s.setProperty("--text-subtle",   p.subtle);
-    s.setProperty("--shadow-md",     p.shadowMd);
-    s.setProperty("--shadow-lg",     p.shadowLg);
-    root.setAttribute("data-theme",  p.dark ? "dark" : "light");
+/* ------------------------------------------------------------
+   2. DATA: contractions (unambiguous missing apostrophes)
+   ------------------------------------------------------------ */
+const CONTRACTIONS_UNAMBIGUOUS = {
+  'dont':"don't",'cant':"can't",'wont':"won't",'isnt':"isn't",'wasnt':"wasn't",
+  'werent':"weren't",'arent':"aren't",'didnt':"didn't",'doesnt':"doesn't",
+  'havent':"haven't",'hasnt':"hasn't",'hadnt':"hadn't",'couldnt':"couldn't",
+  'shouldnt':"shouldn't",'wouldnt':"wouldn't",'wouldve':"would've",'couldve':"could've",
+  'shouldve':"should've",'mightve':"might've","mustve":"must've",
+  'youre':"you're",'theyre':"they're",'theyve':"they've",'youve':"you've","weve":"we've",
+  'youll':"you'll",'theyll':"they'll",'whats':"what's",'wheres':"where's",
+  'whens':"when's",'whys':"why's",'hows':"how's",'thats':"that's",
+  'doesnt':"doesn't",'lemme':"let me",'gimme':"give me"
+};
+
+/* ------------------------------------------------------------
+   3. DATA: wordy / redundant phrases
+   ------------------------------------------------------------ */
+const WORDY_PHRASES = [
+  { bad: /\bin order to\b/gi, good: 'to', why: '"In order to" is usually just "to".' },
+  { bad: /\bdue to the fact that\b/gi, good: 'because', why: '"Due to the fact that" is wordy; use "because".' },
+  { bad: /\bat this point in time\b/gi, good: 'now', why: '"At this point in time" is wordy; use "now".' },
+  { bad: /\bat that point in time\b/gi, good: 'then', why: '"At that point in time" is wordy; use "then".' },
+  { bad: /\bin the event that\b/gi, good: 'if', why: '"In the event that" is wordy; use "if".' },
+  { bad: /\bfor the purpose of\b/gi, good: 'for', why: '"For the purpose of" is wordy; use "for".' },
+  { bad: /\bin spite of the fact that\b/gi, good: 'although', why: 'Use "although" instead.' },
+  { bad: /\bwith regard to\b/gi, good: 'regarding', why: 'Use "regarding" or "about".' },
+  { bad: /\bwith respect to\b/gi, good: 'regarding', why: 'Use "regarding" or "about".' },
+  { bad: /\ba large number of\b/gi, good: 'many', why: '"A large number of" is wordy; use "many".' },
+  { bad: /\ba majority of\b/gi, good: 'most', why: '"A majority of" is wordy; use "most".' },
+  { bad: /\bin the near future\b/gi, good: 'soon', why: '"In the near future" is wordy; use "soon".' },
+  { bad: /\bon a daily basis\b/gi, good: 'daily', why: '"On a daily basis" is wordy; use "daily".' },
+  { bad: /\bon a regular basis\b/gi, good: 'regularly', why: '"On a regular basis" is wordy; use "regularly".' },
+  { bad: /\bis able to\b/gi, good: 'can', why: '"Is able to" is wordy; use "can".' },
+  { bad: /\bare able to\b/gi, good: 'can', why: '"Are able to" is wordy; use "can".' },
+  { bad: /\bwas able to\b/gi, good: 'could', why: '"Was able to" is wordy; use "could".' },
+  { bad: /\bin the process of\b/gi, good: '', why: '"In the process of" is usually unneeded.' },
+  { bad: /\bpast history\b/gi, good: 'history', why: 'All history is past — redundant.' },
+  { bad: /\bend result\b/gi, good: 'result', why: 'All results are at the end — redundant.' },
+  { bad: /\bfinal outcome\b/gi, good: 'outcome', why: 'All outcomes are final — redundant.' },
+  { bad: /\bATM machine\b/g, good: 'ATM', why: 'ATM already means "Automated Teller Machine".' },
+  { bad: /\bPIN number\b/g, good: 'PIN', why: 'PIN already means "Personal Identification Number".' },
+  { bad: /\bclose proximity\b/gi, good: 'near', why: '"Close proximity" is redundant.' },
+  { bad: /\bfree gift\b/gi, good: 'gift', why: 'All gifts are free — redundant.' },
+  { bad: /\bunexpected surprise\b/gi, good: 'surprise', why: 'All surprises are unexpected.' },
+  { bad: /\bcompletely finished\b/gi, good: 'finished', why: 'Finished already implies completely.' },
+  { bad: /\btotally destroyed\b/gi, good: 'destroyed', why: 'Destroyed already implies totally.' },
+  { bad: /\brepeat again\b/gi, good: 'repeat', why: 'Repeat already implies doing it again.' },
+  { bad: /\breturn back\b/gi, good: 'return', why: '"Return back" is redundant.' },
+  { bad: /\brevert back\b/gi, good: 'revert', why: '"Revert back" is redundant.' }
+];
+
+/* ------------------------------------------------------------
+   4. DATA: homophone / confusable patterns with context
+   ------------------------------------------------------------ */
+const HOMOPHONES = [
+  // your vs you're
+  { pattern: /\byour\s+(a|an)\b/gi, fix: m => m.replace(/^your/i, "you're"),
+    msg: '"Your" is possessive. Use "you\'re" (you are) before "a/an".', cat: 'Grammar' },
+  { pattern: /\byour\s+(going|coming|being|welcome|gonna|looking|getting|kidding|right|wrong|correct|amazing|awesome|great|the one|not|always|never)\b/gi,
+    fix: m => m.replace(/^your/i, "you're"),
+    msg: '"Your" is possessive. You likely mean "you\'re" (you are).', cat: 'Grammar' },
+  { pattern: /\byou're\s+(car|house|dog|cat|mom|dad|brother|sister|friend|family|job|work|book|phone|room|team|name|hair|face|eyes|idea|problem|fault|turn)\b/gi,
+    fix: m => m.replace(/^you're/i, "your"),
+    msg: '"You\'re" means "you are". Use "your" (possessive).', cat: 'Grammar' },
+
+  // there vs their vs they're
+  { pattern: /\btheir\s+(is|was|are|were|going|coming|will be)\b/gi,
+    fix: m => m.replace(/^their/i, "they're").replace(/\s+(is|was|are|were)\b/i, ''),
+    msg: '"Their" is possessive. You likely mean "they\'re" (they are) or "there is/are".', cat: 'Grammar',
+    customFix: true },
+  { pattern: /\bthere\s+(going|coming|being|gonna|here|the ones)\b/gi,
+    fix: m => m.replace(/^there/i, "they're"),
+    msg: 'You likely mean "they\'re" (they are).', cat: 'Grammar' },
+  { pattern: /\bthere\s+(car|house|dog|cat|mom|dad|brother|sister|friends?|family|jobs?|stuff|things|idea|problem|fault|turn|kids?|parents?)\b/gi,
+    fix: m => m.replace(/^there/i, "their"),
+    msg: 'Use "their" (possessive).', cat: 'Grammar' },
+  { pattern: /\bthere's\s+(car|house|dog|cat|mom|dad|brother|sister|friends?|family|jobs?|stuff|things|kids?|parents?)\b/gi,
+    fix: m => m.replace(/^there's/i, "their"),
+    msg: 'Use "their" (possessive), not "there\'s".', cat: 'Grammar' },
+
+  // then vs than
+  { pattern: /\b(better|worse|more|less|bigger|smaller|taller|shorter|older|younger|faster|slower|greater|fewer|higher|lower|stronger|weaker|larger|smaller|cheaper|cooler|warmer|hotter|colder|easier|harder|safer|rather|other|different|longer)\s+then\b/gi,
+    fix: m => m.replace(/\bthen\b/i, 'than'),
+    msg: 'Use "than" for comparisons.', cat: 'Grammar' },
+  { pattern: /\b(no one|nothing|none|nobody)\s+other\s+then\b/gi,
+    fix: m => m.replace(/\bthen\b/i, 'than'),
+    msg: 'Use "than" for comparisons.', cat: 'Grammar' },
+
+  // its vs it's
+  { pattern: /\bits\s+(a|an|the|not|been|still|always|now|here|important|possible|very|really|too|about|because|just|probably|definitely|actually|almost|also|going|getting|becoming|time|amazing|awesome|great|terrible|good|bad|cool|nice|fantastic|hilarious|crazy|wild|weird|strange|interesting|boring|easy|hard|simple|complicated|hot|cold|warm|loud|quiet|bright|dark|beautiful|ugly|true|false|right|wrong|obvious|clear)\b/gi,
+    fix: m => m.replace(/^its/i, "it's"),
+    msg: '"Its" is possessive. Use "it\'s" (it is).', cat: 'Grammar' },
+  { pattern: /\bit's\s+(color|name|shape|size|weight|height|length|owner|job|purpose|tail|face|own|effects?|features?|history|future|design|roots)\b/gi,
+    fix: m => m.replace(/^it's/i, "its"),
+    msg: '"It\'s" means "it is". Use "its" (possessive).', cat: 'Grammar' },
+
+  // to vs too
+  { pattern: /\bto\s+(much|many|few|little|late|early|big|small|hot|cold|fast|slow|hard|easy|good|bad|often|soon|far|close|tight|loose|heavy|light|high|low|bright|dark|quiet|loud|quick|busy|tired|nice|cool|sweet|salty|spicy|young|old)\b/gi,
+    fix: m => m.replace(/^to/i, 'too'),
+    msg: 'Use "too" (excessively) here.', cat: 'Grammar' },
+  { pattern: /\b(me|you|him|her|us|them|him|we|I)\s+to\b(?=[.,!?\s]|$)/gi,
+    fix: m => m.replace(/\bto\b/i, 'too'),
+    msg: 'Use "too" (also).', cat: 'Grammar', conservative: true },
+
+  // loose vs lose
+  { pattern: /\bdont\s+want\s+to\s+loose\b/gi, fix: () => "don't want to lose",
+    msg: '"Loose" is an adjective. Use "lose" (verb).', cat: 'Grammar' },
+  { pattern: /\b(to|gonna|going to|might|will|would|could|can|may)\s+loose\b/gi,
+    fix: m => m.replace(/\bloose\b/i, 'lose'),
+    msg: '"Loose" is an adjective. Use "lose" (verb).', cat: 'Grammar' },
+  { pattern: /\bloose\s+(the|a|an|my|your|his|her|their|our)\s+(game|match|race|bet|job|money|weight|keys|phone|wallet|chance)\b/gi,
+    fix: m => m.replace(/^loose/i, 'lose'),
+    msg: 'Use "lose" (verb).', cat: 'Grammar' },
+
+  // could of / would of / should of
+  { pattern: /\b(could|would|should|might|must)\s+of\b/gi,
+    fix: m => m.replace(/\bof\b/i, 'have'),
+    msg: 'It\'s "[modal] have", not "[modal] of".', cat: 'Grammar' },
+
+  // whos vs whose
+  { pattern: /\bwhos\s+(going|coming|been|got|getting|doing|making|calling|talking|thinking|there|here|that|this|on|in|out|up|down|with)\b/gi,
+    fix: m => m.replace(/^whos/i, "who's"),
+    msg: 'Use "who\'s" (who is).', cat: 'Grammar' },
+
+  // alright
+  { pattern: /\balright\b/gi, fix: () => 'all right',
+    msg: '"Alright" is considered nonstandard. "All right" is preferred in formal writing.',
+    cat: 'Style', severity: 'style' },
+
+  // irregardless
+  { pattern: /\birregardless\b/gi, fix: () => 'regardless',
+    msg: '"Irregardless" is a double negative. Use "regardless".', cat: 'Grammar' },
+
+  // for all intensive purposes
+  { pattern: /\bfor all intensive purposes\b/gi, fix: () => 'for all intents and purposes',
+    msg: 'The correct idiom is "for all intents and purposes".', cat: 'Grammar' },
+
+  // could care less
+  { pattern: /\bcould care less\b/gi, fix: () => "couldn't care less",
+    msg: 'The idiom is "couldn\'t care less" — you care so little you couldn\'t possibly care less.',
+    cat: 'Grammar', severity: 'warning' },
+
+  // their's — not a word
+  { pattern: /\btheir's\b/gi, fix: () => "there's",
+    msg: '"Their\'s" is not a word. Use "there\'s" (there is) or "theirs" (possessive).', cat: 'Spelling' },
+
+  // accept vs except
+  { pattern: /\b(everyone|everybody|all|no one|nobody|anyone|anybody)\s+accept\b/gi,
+    fix: m => m.replace(/\baccept\b/i, 'except'),
+    msg: '"Accept" means to receive. Use "except" (excluding).', cat: 'Grammar' },
+];
+
+/* ------------------------------------------------------------
+   5. DATA: subject-verb agreement (basic patterns)
+   ------------------------------------------------------------ */
+const SV_AGREEMENT = [
+  { pattern: /\bI\s+are\b/g, fix: () => 'I am', msg: 'Subject-verb: use "I am".', cat: 'Grammar' },
+  { pattern: /\bI\s+is\b/g, fix: () => 'I am', msg: 'Subject-verb: use "I am".', cat: 'Grammar' },
+  { pattern: /\bI\s+were\b/g, fix: () => 'I was',
+    msg: 'Subject-verb: use "I was". ("I were" is only valid in hypothetical — "if I were".)',
+    cat: 'Grammar', severity: 'warning' },
+  { pattern: /\bhe\s+are\b/gi, fix: m => m.replace(/\bare\b/i, 'is'),
+    msg: 'Subject-verb: singular "he" takes "is".', cat: 'Grammar' },
+  { pattern: /\bshe\s+are\b/gi, fix: m => m.replace(/\bare\b/i, 'is'),
+    msg: 'Subject-verb: singular "she" takes "is".', cat: 'Grammar' },
+  { pattern: /\bit\s+are\b/gi, fix: m => m.replace(/\bare\b/i, 'is'),
+    msg: 'Subject-verb: singular "it" takes "is".', cat: 'Grammar' },
+  { pattern: /\bthey\s+is\b/gi, fix: m => m.replace(/\bis\b/i, 'are'),
+    msg: 'Subject-verb: plural "they" takes "are".', cat: 'Grammar' },
+  { pattern: /\bwe\s+is\b/gi, fix: m => m.replace(/\bis\b/i, 'are'),
+    msg: 'Subject-verb: plural "we" takes "are".', cat: 'Grammar' },
+  { pattern: /\byou\s+is\b/gi, fix: m => m.replace(/\bis\b/i, 'are'),
+    msg: 'Subject-verb: "you" takes "are".', cat: 'Grammar' },
+  { pattern: /\bhe\s+were\b/gi, fix: m => m.replace(/\bwere\b/i, 'was'),
+    msg: 'Subject-verb: singular "he" takes "was".', cat: 'Grammar', severity: 'warning' },
+  { pattern: /\bshe\s+were\b/gi, fix: m => m.replace(/\bwere\b/i, 'was'),
+    msg: 'Subject-verb: singular "she" takes "was".', cat: 'Grammar', severity: 'warning' },
+  { pattern: /\bthey\s+was\b/gi, fix: m => m.replace(/\bwas\b/i, 'were'),
+    msg: 'Subject-verb: plural "they" takes "were".', cat: 'Grammar' },
+  { pattern: /\bwe\s+was\b/gi, fix: m => m.replace(/\bwas\b/i, 'were'),
+    msg: 'Subject-verb: plural "we" takes "were".', cat: 'Grammar' },
+  { pattern: /\byou\s+was\b/gi, fix: m => m.replace(/\bwas\b/i, 'were'),
+    msg: 'Subject-verb: "you" takes "were".', cat: 'Grammar' },
+  { pattern: /\bhe\s+(don't|dont)\b/gi, fix: m => m.replace(/(don't|dont)/i, "doesn't"),
+    msg: 'Subject-verb: use "he doesn\'t", not "he don\'t".', cat: 'Grammar' },
+  { pattern: /\bshe\s+(don't|dont)\b/gi, fix: m => m.replace(/(don't|dont)/i, "doesn't"),
+    msg: 'Subject-verb: use "she doesn\'t", not "she don\'t".', cat: 'Grammar' },
+  { pattern: /\bit\s+(don't|dont)\b/gi, fix: m => m.replace(/(don't|dont)/i, "doesn't"),
+    msg: 'Subject-verb: use "it doesn\'t".', cat: 'Grammar' },
+  // compound subject with singular verb ("me and my friend was...")
+  { pattern: /\b(me|him|her)\s+and\s+(?:\w+\s+){1,3}(is|was|has|does|goes|knows|wants|thinks|seems|needs|feels|likes|loves|hates)\b/gi,
+    fix: null,
+    msg: 'Check subject-verb agreement — and consider word order ("My friend and I..."). Compound subject usually takes plural verb.',
+    cat: 'Grammar', severity: 'warning' },
+  // non-standard past tenses
+  { pattern: /\b(we|they|you|I|he|she)\s+seen\b/gi,
+    fix: m => m.replace(/\bseen\b/i, 'saw'),
+    msg: 'Past tense of "see" is "saw". "Seen" requires an auxiliary ("have seen").', cat: 'Grammar' },
+  { pattern: /\b(we|they|you|I|he|she)\s+done\b/gi,
+    fix: m => m.replace(/\bdone\b/i, 'did'),
+    msg: 'Past tense of "do" is "did". "Done" requires an auxiliary ("have done").',
+    cat: 'Grammar', severity: 'warning' },
+  { pattern: /\bain't\b/gi, fix: null,
+    msg: '"Ain\'t" is nonstandard in formal writing. Consider "isn\'t", "aren\'t", or "am not".',
+    cat: 'Style', severity: 'style' }
+];
+
+/* ------------------------------------------------------------
+   6. DATA: proper nouns to capitalize (days, months, etc.)
+   ------------------------------------------------------------ */
+const PROPER_NOUNS = [
+  'monday','tuesday','wednesday','thursday','friday','saturday','sunday',
+  'mondays','tuesdays','wednesdays','thursdays','fridays','saturdays','sundays',
+  'january','february','march','april','may','june','july','august',
+  'september','october','november','december',
+  'english','spanish','french','german','italian','japanese','chinese',
+  'russian','portuguese','arabic','hebrew','korean','greek','latin',
+  'america','american','americans','europe','european','europeans',
+  'africa','african','africans','asia','asian','asians',
+  'canada','canadian','canadians','mexico','mexican','mexicans',
+  'britain','british','england','scotland','scottish','ireland','irish',
+  'australia','australian','australians','christian','christians','muslim','muslims',
+  'jewish','buddhist','buddhists','hindu','hindus'
+];
+
+/* ------------------------------------------------------------
+   7. ENGINE
+   ------------------------------------------------------------ */
+
+const FILLER_WORDS = ['very','really','just','quite','actually','basically','literally','totally'];
+const WEAK_VERBS = ['is','are','was','were','be','been','being','have','has','had','get','got','make','made','do','did'];
+
+class GrammarEngine {
+  constructor() {
+    this.ruleCount = 0;
+    this.build();
   }
 
-  function applyLogoColors() {
-    root.style.setProperty("--logo-math",    state.logoMath);
-    root.style.setProperty("--logo-study",   state.logoStudy);
-    root.style.setProperty("--logo-music",   state.logoMusic);
-    root.style.setProperty("--logo-writing", state.logoWriting);
-    root.style.setProperty("--logo-brand",   state.logoBrand);
+  build() {
+    // Just for display — count logical rules
+    this.ruleCount =
+      Object.keys(MISSPELLINGS).length +
+      Object.keys(CONTRACTIONS_UNAMBIGUOUS).length +
+      WORDY_PHRASES.length +
+      HOMOPHONES.length +
+      SV_AGREEMENT.length +
+      PROPER_NOUNS.length +
+      30; // meta/structural rules
   }
 
-  function applyState() {
-    // Site palette (overrides theme)
-    const pal = PALETTES[state.sitePalette] || PALETTES.cream;
-    applyPalette(pal);
-    // Other tokens
-    root.setAttribute("data-accent",   state.accent);
-    root.setAttribute("data-radius",   state.radius);
-    root.setAttribute("data-fontpair", state.fontPair);
-    root.setAttribute("data-cardstyle",state.cardStyle);
-    root.setAttribute("data-density",  state.density);
-    // Logo colors
-    applyLogoColors();
-    // Reflect active states in seg buttons
-    document.querySelectorAll("[data-tweak]").forEach(group => {
-      const key = group.getAttribute("data-tweak");
-      group.querySelectorAll("button").forEach(b => {
-        b.classList.toggle("active", b.getAttribute("data-val") === state[key]);
-      });
-    });
-    // Reflect active states in logo swatches
-    document.querySelectorAll("[data-logo]").forEach(group => {
-      const key = group.getAttribute("data-logo");
-      group.querySelectorAll("button").forEach(b => {
-        b.classList.toggle("active", b.getAttribute("data-color") === state[key]);
-      });
-    });
-  }
+  check(text) {
+    if (!text || !text.trim()) return [];
+    const errors = [];
 
-  function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    try { window.parent.postMessage({type:'__edit_mode_set_keys', edits: state}, '*'); } catch(e){}
-  }
+    this.checkMisspellings(text, errors);
+    this.checkContractions(text, errors);
+    this.checkHomophones(text, errors);
+    this.checkSVAgreement(text, errors);
+    this.checkWordy(text, errors);
+    this.checkCapitalization(text, errors);
+    this.checkProperNouns(text, errors);
+    this.checkAAn(text, errors);
+    this.checkDoubleWords(text, errors);
+    this.checkSpacing(text, errors);
+    this.checkPunctuation(text, errors);
+    this.checkPassiveVoice(text, errors);
+    this.checkRepetition(text, errors);
+    this.checkSentenceLength(text, errors);
+    this.checkDoubleNegative(text, errors);
 
-  applyState();
-
-  // Wire seg/palette tweak buttons
-  document.querySelectorAll("[data-tweak]").forEach(group => {
-    const key = group.getAttribute("data-tweak");
-    group.querySelectorAll("button").forEach(b => {
-      b.addEventListener("click", () => {
-        state[key] = b.getAttribute("data-val");
-        applyState();
-        save();
-      });
-    });
-  });
-
-  // Wire logo color swatches
-  document.querySelectorAll("[data-logo]").forEach(group => {
-    const key = group.getAttribute("data-logo");
-    group.querySelectorAll("button").forEach(b => {
-      b.addEventListener("click", () => {
-        state[key] = b.getAttribute("data-color");
-        applyLogoColors();
-        // update active states in this group
-        group.querySelectorAll("button").forEach(x =>
-          x.classList.toggle("active", x.getAttribute("data-color") === state[key])
-        );
-        save();
-      });
-    });
-  });
-
-  /* ================================================
-     EDIT MODE PROTOCOL
-     ================================================ */
-  const panel = document.getElementById("tweaksPanel");
-  window.addEventListener("message", (e) => {
-    const d = e.data || {};
-    if (d.type === "__activate_edit_mode")   panel.classList.add("open");
-    if (d.type === "__deactivate_edit_mode") panel.classList.remove("open");
-  });
-  try { window.parent.postMessage({type:'__edit_mode_available'}, '*'); } catch(e){}
-
-
-  /* ================================================
-     TIME-OF-DAY GREETING
-     ================================================ */
-  function updateGreeting() {
-    const h = new Date().getHours();
-    let txt, glyph;
-    if (h < 5)       { txt = "Burning the midnight oil"; glyph = "☾"; }
-    else if (h < 12) { txt = "Good morning";             glyph = "☀"; }
-    else if (h < 17) { txt = "Good afternoon";           glyph = "☀"; }
-    else if (h < 21) { txt = "Good evening";             glyph = "✦"; }
-    else             { txt = "Wrapping up for tonight";  glyph = "☾"; }
-    const t = document.getElementById("greetingText");
-    const g = document.getElementById("greetingGlyph");
-    if (t) t.textContent = txt;
-    if (g) g.textContent = glyph;
-  }
-  updateGreeting();
-
-  /* ================================================
-     NAV + PAGE SWITCHING
-     ================================================ */
-  const PAGES = {
-    home:    { title: "Student Tools", tag: "Work smarter",   brandClass: "clay-accent", brandGlyph: "S", nav: "home" },
-    math:    { title: "Math Tools",    tag: "Solve smarter",  brandClass: "clay-math",   brandGlyph: "∑", nav: "math" },
-    music:   { title: "Music Tools",   tag: "Play better",    brandClass: "clay-music",  brandGlyph: "♪", nav: "music" },
-    study:   { title: "Studying Tools",tag: "Study smarter",  brandClass: "clay-study",  brandGlyph: "✦", nav: "study" },
-    writing: { title: "Writing Tools", tag: "Write smarter",  brandClass: "clay-writing",brandGlyph: "✎", nav: "writing" },
-    contact: { title: "Student Tools", tag: "Work smarter",   brandClass: "clay-accent", brandGlyph: "S", nav: "home" },
-    terms:   { title: "Student Tools", tag: "Work smarter",   brandClass: "clay-accent", brandGlyph: "S", nav: "home" },
-    privacy: { title: "Student Tools", tag: "Work smarter",   brandClass: "clay-accent", brandGlyph: "S", nav: "home" },
-  };
-
-  const NAV_HOME = [
-    { label: "Dashboard", items: [ { id:"home", name:"Home", icon:"clay-accent", glyph:"⌂", active:true } ] },
-    { label: "Categories", items: [
-        { id:"math",    name:"Math Tools",     icon:"clay-math",    glyph:"∑" },
-        { id:"study",   name:"Studying Tools", icon:"clay-study",   glyph:"✦" },
-        { id:"music",   name:"Music Tools",    icon:"clay-music",   glyph:"♪" },
-        { id:"writing", name:"Writing Tools",  icon:"clay-writing", glyph:"✎" },
-    ]},
-  ];
-  const NAV_MATH = [
-    { label: "Dashboard", items: [ { id:"math", name:"Home", icon:"clay-accent", glyph:"⌂", active:true } ] },
-    { label: "Algebra", items: [
-      { name:"Linear Equations",    icon:"clay-math",   glyph:"△" },
-      { name:"Quadratic Solver",    icon:"clay-butter", glyph:"◈" },
-      { name:"Systems of Equations",icon:"clay-rose",   glyph:"∞" },
-      { name:"Polynomial Tools",    icon:"clay-study",  glyph:"▤" },
-    ]},
-    { label: "Functions & Graphing", items: [
-      { name:"Graphing Calculator", icon:"clay-music",   glyph:"∿" },
-      { name:"Logarithm Calculator",icon:"clay-writing", glyph:"㏒" },
-    ]},
-    { label: "Trigonometry", items: [
-      { name:"Trig Calculator",     icon:"clay-math",  glyph:"θ" },
-      { name:"Unit Circle",         icon:"clay-rose",  glyph:"◉" },
-      { name:"Limits",              icon:"clay-butter",glyph:"→" },
-    ]},
-  ];
-  const NAV_MUSIC = [
-    { label: "Dashboard", items: [ { id:"music", name:"Home", icon:"clay-accent", glyph:"⌂", active:true } ] },
-    { label: "Rhythm", items: [ { name:"Band Metronome", icon:"clay-music", glyph:"♪" } ]},
-    { label: "Notation", items: [ { name:"Sheet Music Creator", icon:"clay-writing", glyph:"♯" } ]},
-  ];
-  const NAV_STUDY = [
-    { label: "Dashboard", items: [ { id:"study", name:"Home", icon:"clay-accent", glyph:"⌂", active:true } ] },
-    { label: "Study Tools", items: [
-      { name:"Flashcards", icon:"clay-study", glyph:"♤" },
-      { name:"Quiz Maker", icon:"clay-butter", glyph:"✎" },
-      { name:"Game Study", icon:"clay-rose", glyph:"▶" },
-      { name:"Study Time Tracker", icon:"clay-music", glyph:"⏱" },
-    ]},
-  ];
-  const NAV_WRITING = [
-    { label: "Dashboard", items: [ { id:"writing", name:"Home", icon:"clay-accent", glyph:"⌂", active:true } ] },
-    { label: "Writing Tools", items: [ { name:"Grammar Checker", icon:"clay-writing", glyph:"✎" } ]},
-  ];
-
-  const NAVS = { home:NAV_HOME, math:NAV_MATH, music:NAV_MUSIC, study:NAV_STUDY, writing:NAV_WRITING, contact:NAV_HOME, terms:NAV_HOME, privacy:NAV_HOME };
-
-  function renderSidebar(pageKey) {
-    const nav = NAVS[pageKey] || NAV_HOME;
-    const html = nav.map(group => `
-      <div class="nav-group">
-        <div class="nav-label">${group.label}</div>
-        ${group.items.map(it => `
-          <a class="nav-item ${it.active ? 'active' : ''}" data-nav="${it.id || 'home'}">
-            <span class="clay-icon ${it.icon} xs glyph">${it.glyph}</span>
-            ${it.name}
-          </a>
-        `).join("")}
-      </div>
-    `).join("");
-    document.getElementById("sidebarNav").innerHTML = html;
-    // Re-bind
-    document.querySelectorAll("#sidebarNav [data-nav]").forEach(el => {
-      el.addEventListener("click", (e) => { e.preventDefault(); navigate(el.getAttribute("data-nav")); });
-    });
-  }
-
-  function navigate(key) {
-    if (!PAGES[key]) key = "home";
-    const p = PAGES[key];
-    // Update brand
-    document.getElementById("brandTitle").textContent = p.title;
-    document.getElementById("brandTag").textContent = p.tag.toUpperCase();
-    const brandMark = document.querySelector(".brand .clay-icon");
-    brandMark.className = "clay-icon " + p.brandClass + " sm";
-    brandMark.textContent = p.brandGlyph;
-    // Swap page
-    document.querySelectorAll(".page").forEach(pg => pg.classList.remove("active"));
-    const pg = document.getElementById("page-" + key);
-    if (pg) pg.classList.add("active");
-    // Sidebar
-    renderSidebar(p.nav);
-    // Scroll top
-    window.scrollTo({top:0, behavior:"instant"});
-    // persist current page lightly
-    try { localStorage.setItem("stu-tools-page", key); } catch(e){}
-  }
-
-  // Global delegation for data-nav links
-  document.body.addEventListener("click", (e) => {
-    const a = e.target.closest("[data-nav]");
-    if (a) {
-      e.preventDefault();
-      navigate(a.getAttribute("data-nav"));
+    // Assign IDs, dedupe overlapping
+    errors.sort((a, b) => a.start - b.start || b.end - a.end);
+    const deduped = [];
+    let lastEnd = -1;
+    for (const e of errors) {
+      if (e.start >= lastEnd) {
+        e.id = 'e' + deduped.length;
+        deduped.push(e);
+        lastEnd = e.end;
+      }
     }
-  });
+    return deduped;
+  }
 
-  // Initial
-  let initial = "home";
-  try { initial = localStorage.getItem("stu-tools-page") || "home"; } catch(e){}
-  navigate(initial);
+  /* ---- Rule: misspellings (case-preserved) ---- */
+  checkMisspellings(text, errors) {
+    // Build one big regex for performance
+    const words = Object.keys(MISSPELLINGS);
+    const re = new RegExp('\\b(' + words.join('|') + ')\\b', 'gi');
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const orig = m[0];
+      const key = orig.toLowerCase();
+      const correct = MISSPELLINGS[key];
+      if (!correct) continue;
+      errors.push({
+        start: m.index, end: m.index + orig.length,
+        original: orig,
+        suggestion: preserveCase(orig, correct),
+        message: 'Common misspelling.',
+        category: 'Spelling',
+        severity: 'error'
+      });
+    }
+  }
+
+  /* ---- Rule: contractions ---- */
+  checkContractions(text, errors) {
+    const words = Object.keys(CONTRACTIONS_UNAMBIGUOUS);
+    const re = new RegExp('\\b(' + words.join('|') + ')\\b', 'gi');
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const orig = m[0];
+      const key = orig.toLowerCase();
+      const correct = CONTRACTIONS_UNAMBIGUOUS[key];
+      if (!correct) continue;
+      errors.push({
+        start: m.index, end: m.index + orig.length,
+        original: orig,
+        suggestion: preserveCase(orig, correct),
+        message: 'Missing apostrophe in contraction.',
+        category: 'Punctuation',
+        severity: 'error'
+      });
+    }
+
+    // "im" at start of sentence or standalone (lowercase) — context check
+    const imRe = /(^|[.!?]\s+|\n\s*)(im)\b/g;
+    let im;
+    while ((im = imRe.exec(text)) !== null) {
+      const wordStart = im.index + im[1].length;
+      errors.push({
+        start: wordStart, end: wordStart + 2,
+        original: 'im',
+        suggestion: "I'm",
+        message: 'Missing apostrophe and capital "I".',
+        category: 'Punctuation',
+        severity: 'error'
+      });
+    }
+  }
+
+  /* ---- Rule: homophones / confusables ---- */
+  checkHomophones(text, errors) {
+    for (const rule of HOMOPHONES) {
+      const re = new RegExp(rule.pattern.source, rule.pattern.flags);
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        const orig = m[0];
+        const suggestion = rule.fix ? rule.fix(orig) : null;
+        if (suggestion && suggestion === orig) continue;
+        errors.push({
+          start: m.index, end: m.index + orig.length,
+          original: orig,
+          suggestion: suggestion,
+          message: rule.msg,
+          category: rule.cat || 'Grammar',
+          severity: rule.severity || 'error'
+        });
+      }
+    }
+  }
+
+  /* ---- Rule: subject-verb agreement ---- */
+  checkSVAgreement(text, errors) {
+    for (const rule of SV_AGREEMENT) {
+      const re = new RegExp(rule.pattern.source, rule.pattern.flags);
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        const orig = m[0];
+        const suggestion = rule.fix ? rule.fix(orig) : null;
+        errors.push({
+          start: m.index, end: m.index + orig.length,
+          original: orig,
+          suggestion: suggestion,
+          message: rule.msg,
+          category: rule.cat || 'Grammar',
+          severity: rule.severity || 'error'
+        });
+      }
+    }
+  }
+
+  /* ---- Rule: wordy / redundant ---- */
+  checkWordy(text, errors) {
+    for (const rule of WORDY_PHRASES) {
+      const re = new RegExp(rule.bad.source, rule.bad.flags);
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        errors.push({
+          start: m.index, end: m.index + m[0].length,
+          original: m[0],
+          suggestion: preserveCase(m[0], rule.good),
+          message: rule.why,
+          category: 'Style',
+          severity: 'style'
+        });
+      }
+    }
+  }
+
+  /* ---- Rule: capitalization (sentence start, standalone I) ---- */
+  checkCapitalization(text, errors) {
+    // Standalone lowercase "i"
+    const iRe = /(^|[^A-Za-z'])(i)([^A-Za-z'])/g;
+    let m;
+    while ((m = iRe.exec(text)) !== null) {
+      const wordStart = m.index + m[1].length;
+      // avoid overlap — only real cases
+      const before = m[1];
+      const after = m[3];
+      // Must be clearly a pronoun usage: i'm, i am, i have, i will, etc — but we already have standalone
+      errors.push({
+        start: wordStart, end: wordStart + 1,
+        original: 'i',
+        suggestion: 'I',
+        message: 'The pronoun "I" should be capitalized.',
+        category: 'Capitalization',
+        severity: 'error'
+      });
+      iRe.lastIndex = wordStart + 1; // avoid infinite loop
+    }
+
+    // Sentence-start lowercase letter
+    const sentRe = /(^|[.!?]["')\]]?\s+|\n\s*)([a-z])/g;
+    let s;
+    while ((s = sentRe.exec(text)) !== null) {
+      const letterIdx = s.index + s[1].length;
+      const letter = s[2];
+      // Skip if preceded by ellipsis-like pattern
+      errors.push({
+        start: letterIdx, end: letterIdx + 1,
+        original: letter,
+        suggestion: letter.toUpperCase(),
+        message: 'Capitalize the first letter of a sentence.',
+        category: 'Capitalization',
+        severity: 'error'
+      });
+    }
+  }
+
+  /* ---- Rule: proper nouns (days, months, countries, languages) ---- */
+  checkProperNouns(text, errors) {
+    const re = new RegExp('\\b(' + PROPER_NOUNS.join('|') + ')\\b', 'g');
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const word = m[0];
+      if (word[0] === word[0].toUpperCase()) continue; // already capitalized
+      errors.push({
+        start: m.index, end: m.index + word.length,
+        original: word,
+        suggestion: word[0].toUpperCase() + word.slice(1),
+        message: 'Proper noun should be capitalized.',
+        category: 'Capitalization',
+        severity: 'error'
+      });
+    }
+  }
+
+  /* ---- Rule: a vs an (vowel sound) ---- */
+  checkAAn(text, errors) {
+    // "a" before vowel sound (imperfect — uses vowel letter as proxy)
+    // Special cases: "a university", "a user", "a European" (start with consonant sound) — keep "a"
+    //                "an hour", "an honor", "an honest" (silent h) — use "an"
+    const silentH = /^(hour|honor|honest|heir|herb)/i; // 'herb' in American English
+    const consonantSoundVowel = /^(uni|use|user|user|useful|eur|one)/i;
+
+    const reA = /\b(a)\s+([a-z]+)/gi;
+    let m;
+    while ((m = reA.exec(text)) !== null) {
+      const next = m[2];
+      const isVowelStart = /^[aeiouAEIOU]/.test(next);
+      const isSilentH = silentH.test(next);
+      const isConsonantSoundVowel = consonantSoundVowel.test(next);
+      const shouldBeAn = (isVowelStart && !isConsonantSoundVowel) || isSilentH;
+      if (shouldBeAn) {
+        const aStart = m.index;
+        errors.push({
+          start: aStart, end: aStart + 1,
+          original: m[1],
+          suggestion: m[1] === 'A' ? 'An' : 'an',
+          message: `Use "an" before a vowel sound ("${next}").`,
+          category: 'Grammar',
+          severity: 'error'
+        });
+      }
+    }
+
+    const reAn = /\b(an)\s+([a-z]+)/gi;
+    while ((m = reAn.exec(text)) !== null) {
+      const next = m[2];
+      const isVowelStart = /^[aeiouAEIOU]/.test(next);
+      const isSilentH = silentH.test(next);
+      const isConsonantSoundVowel = consonantSoundVowel.test(next);
+      const shouldBeAn = (isVowelStart && !isConsonantSoundVowel) || isSilentH;
+      if (!shouldBeAn) {
+        const anStart = m.index;
+        errors.push({
+          start: anStart, end: anStart + 2,
+          original: m[1],
+          suggestion: m[1] === 'An' ? 'A' : 'a',
+          message: `Use "a" before a consonant sound ("${next}").`,
+          category: 'Grammar',
+          severity: 'error'
+        });
+      }
+    }
+  }
+
+  /* ---- Rule: double words ---- */
+  checkDoubleWords(text, errors) {
+    const re = /\b(\w+)\s+\1\b/gi;
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const word = m[1].toLowerCase();
+      // Some acceptable doubles
+      if (['that','had','said','very','so','no','bye','tut','hear','yeah','yes'].includes(word)) continue;
+      errors.push({
+        start: m.index, end: m.index + m[0].length,
+        original: m[0],
+        suggestion: m[1],
+        message: 'Word repeated.',
+        category: 'Typo',
+        severity: 'error'
+      });
+    }
+  }
+
+  /* ---- Rule: spacing (double spaces, missing spaces) ---- */
+  checkSpacing(text, errors) {
+    // Double+ spaces (not at start of line)
+    const dblSp = /(?<=\S)( {2,})(?=\S)/g;
+    let m;
+    while ((m = dblSp.exec(text)) !== null) {
+      errors.push({
+        start: m.index, end: m.index + m[1].length,
+        original: m[1],
+        suggestion: ' ',
+        message: 'Multiple spaces — use a single space.',
+        category: 'Spacing',
+        severity: 'warning'
+      });
+    }
+
+    // Space before punctuation
+    const beforePunc = /\s+([,.;:!?])/g;
+    while ((m = beforePunc.exec(text)) !== null) {
+      errors.push({
+        start: m.index, end: m.index + m[0].length,
+        original: m[0],
+        suggestion: m[1],
+        message: 'No space before punctuation.',
+        category: 'Spacing',
+        severity: 'warning'
+      });
+    }
+
+    // Missing space after sentence-end punctuation followed by letter
+    const missingAfter = /([,.!?;:])([A-Za-z])/g;
+    while ((m = missingAfter.exec(text)) !== null) {
+      // Skip common abbreviations and decimals
+      const before = text.substring(Math.max(0, m.index - 3), m.index);
+      if (m[1] === '.' && /\b(Mr|Mrs|Ms|Dr|Jr|Sr|St|vs|etc|e\.g|i\.e)$/i.test(before)) continue;
+      if (m[1] === '.' && /\d$/.test(before) && /^\d/.test(m[2])) continue;
+      errors.push({
+        start: m.index, end: m.index + m[0].length,
+        original: m[0],
+        suggestion: m[1] + ' ' + m[2],
+        message: 'Missing space after punctuation.',
+        category: 'Spacing',
+        severity: 'warning'
+      });
+    }
+  }
+
+  /* ---- Rule: punctuation (missing period at end, triple!!) ---- */
+  checkPunctuation(text, errors) {
+    // Triple+ exclamation / question marks
+    const triple = /([!?]){3,}/g;
+    let m;
+    while ((m = triple.exec(text)) !== null) {
+      errors.push({
+        start: m.index, end: m.index + m[0].length,
+        original: m[0],
+        suggestion: m[1],
+        message: 'Excessive punctuation — one is usually enough.',
+        category: 'Style',
+        severity: 'style'
+      });
+    }
+
+    // Ending without terminal punctuation (only check last sentence)
+    const trimmed = text.replace(/\s+$/, '');
+    if (trimmed.length > 20) {
+      const lastIdx = trimmed.length - 1;
+      const lastChar = trimmed[lastIdx];
+      if (!'.!?"\'):]'.includes(lastChar) && /[a-zA-Z]/.test(lastChar)) {
+        errors.push({
+          start: lastIdx, end: lastIdx + 1,
+          original: lastChar,
+          suggestion: lastChar + '.',
+          message: 'Sentence appears to be missing terminal punctuation.',
+          category: 'Punctuation',
+          severity: 'warning'
+        });
+      }
+    }
+  }
+
+  /* ---- Rule: passive voice (informational) ---- */
+  checkPassiveVoice(text, errors) {
+    const re = /\b(am|is|are|was|were|be|been|being)\s+(\w+ed|written|spoken|taken|given|broken|chosen|frozen|driven|eaten|fallen|forgotten|gotten|seen|done|made|sent|paid|built|felt|heard|held|kept|left|lost|met|put|read|said|sold|told|thought|understood|found|bought)\b/gi;
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      // Skip some false positives
+      const verb = m[2].toLowerCase();
+      if (['need','used','seed','bed','red','fed','wed','shed','bled','fled','sped'].includes(verb)) continue;
+      errors.push({
+        start: m.index, end: m.index + m[0].length,
+        original: m[0],
+        suggestion: null,
+        message: 'Possible passive voice — consider an active construction.',
+        category: 'Style',
+        severity: 'style'
+      });
+    }
+  }
+
+  /* ---- Rule: overused fillers ---- */
+  checkRepetition(text, errors) {
+    // Filler words near each other
+    for (const filler of FILLER_WORDS) {
+      const re = new RegExp(`\\b${filler}\\s+\\w+\\s+${filler}\\b`, 'gi');
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        errors.push({
+          start: m.index, end: m.index + m[0].length,
+          original: m[0],
+          suggestion: null,
+          message: `Filler word "${filler}" used repeatedly — consider trimming.`,
+          category: 'Style',
+          severity: 'style'
+        });
+      }
+    }
+  }
+
+  /* ---- Rule: very long sentences ---- */
+  checkSentenceLength(text, errors) {
+    const re = /[^.!?]+[.!?]+/g;
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const sentence = m[0].trim();
+      const words = sentence.split(/\s+/).filter(Boolean);
+      if (words.length > 40) {
+        errors.push({
+          start: m.index, end: m.index + m[0].length,
+          original: sentence.length > 60 ? sentence.slice(0, 60) + '…' : sentence,
+          suggestion: null,
+          message: `Very long sentence (${words.length} words). Consider breaking it up.`,
+          category: 'Style',
+          severity: 'style'
+        });
+      }
+    }
+  }
+
+  /* ---- Rule: double negatives ---- */
+  checkDoubleNegative(text, errors) {
+    const re = /\b(don't|doesn't|didn't|can't|won't|isn't|wasn't|aren't|weren't|shouldn't|wouldn't|couldn't|haven't|hasn't|hadn't|ain't|dont|cant|wont|isnt)\s+(\w+\s+)?(no|nothing|nobody|none|never|nowhere|neither)\b/gi;
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      errors.push({
+        start: m.index, end: m.index + m[0].length,
+        original: m[0],
+        suggestion: null,
+        message: 'Double negative — in formal English, this reverses the intended meaning.',
+        category: 'Grammar',
+        severity: 'warning'
+      });
+    }
+  }
+}
+
+/* ------------------------------------------------------------
+   HELPERS
+   ------------------------------------------------------------ */
+function preserveCase(source, target) {
+  if (!source) return target;
+  if (source.toUpperCase() === source && source.length > 1) return target.toUpperCase();
+  if (source[0] === source[0].toUpperCase()) {
+    return target[0].toUpperCase() + target.slice(1);
+  }
+  return target;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+}
+
+function countSyllables(word) {
+  word = word.toLowerCase().replace(/[^a-z]/g, '');
+  if (word.length <= 3) return 1;
+  word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+  word = word.replace(/^y/, '');
+  const matches = word.match(/[aeiouy]{1,2}/g);
+  return matches ? matches.length : 1;
+}
+
+function computeStats(text) {
+  const chars = text.length;
+  const words = text.trim() ? text.trim().split(/\s+/) : [];
+  const wordCount = words.length;
+  const sentences = text.match(/[.!?]+/g) || [];
+  const sentenceCount = Math.max(1, sentences.length);
+  const syllables = words.reduce((a, w) => a + countSyllables(w), 0);
+  // Flesch-Kincaid Grade Level
+  const fkgl = wordCount > 0
+    ? (0.39 * (wordCount / sentenceCount)) + (11.8 * (syllables / Math.max(1, wordCount))) - 15.59
+    : 0;
+  const readTime = Math.max(1, Math.round(wordCount / 200 * 60)); // seconds
+  return { chars, words: wordCount, sentences: sentenceCount, readTime, grade: fkgl };
+}
+
+function scoreFromErrors(errors, wordCount) {
+  if (wordCount === 0) return { score: 100, grade: 'Pristine', detail: 'No text to evaluate.' };
+  let penalty = 0;
+  for (const e of errors) {
+    if (e.severity === 'error') penalty += 4;
+    else if (e.severity === 'warning') penalty += 2;
+    else penalty += 1;
+  }
+  // Normalize per 100 words so long texts aren't crushed
+  const perHundred = (penalty / Math.max(wordCount, 20)) * 100;
+  const score = Math.max(0, Math.round(100 - perHundred));
+  let grade, detail;
+  if (score >= 95) { grade = 'Pristine'; detail = 'Clean sheet — you\'d make Kittle proud.'; }
+  else if (score >= 85) { grade = 'Strong'; detail = 'A few small plays to tidy up.'; }
+  else if (score >= 70) { grade = 'Solid'; detail = 'Some mistakes to review.'; }
+  else if (score >= 50) { grade = 'Mixed'; detail = 'Several issues worth fixing.'; }
+  else if (score >= 30) { grade = 'Rough'; detail = 'Heavy revision recommended.'; }
+  else { grade = 'Fumbled'; detail = 'Significant rewriting needed.'; }
+  return { score, grade, detail };
+}
+
+/* ------------------------------------------------------------
+   UI CONTROLLER
+   ------------------------------------------------------------ */
+class UI {
+  constructor() {
+    this.engine = new GrammarEngine();
+    this.$editor = document.getElementById('editor');
+    this.$highlights = document.getElementById('highlights');
+    this.$issuesList = document.getElementById('issuesList');
+    this.$scoreNum = document.getElementById('scoreNum');
+    this.$scoreGrade = document.getElementById('scoreGrade');
+    this.$scoreDetail = document.getElementById('scoreDetail');
+    this.$ringFg = document.getElementById('ringFg');
+
+    this.errors = [];
+    this.filter = 'all';
+    this.focusedId = null;
+
+    this.bindEvents();
+    this.updateRuleCount();
+    this.renderAll();
+  }
+
+  updateRuleCount() {
+    const n = this.engine.ruleCount.toLocaleString();
+    document.getElementById('ruleCount').textContent = n;
+    document.getElementById('ruleCount2').textContent = n;
+  }
+
+  bindEvents() {
+    let timer;
+    this.$editor.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => this.renderAll(), 180);
+      // Instantly update highlights for responsiveness
+      this.syncHighlightsNoCheck();
+    });
+    this.$editor.addEventListener('scroll', () => {
+      this.$highlights.scrollTop = this.$editor.scrollTop;
+      this.$highlights.scrollLeft = this.$editor.scrollLeft;
+    });
+
+    document.getElementById('btnCheck').addEventListener('click', () => this.renderAll());
+    document.getElementById('btnExample').addEventListener('click', () => this.loadExample());
+    document.getElementById('btnClear').addEventListener('click', () => {
+      this.$editor.value = '';
+      this.renderAll();
+      this.$editor.focus();
+    });
+    document.getElementById('btnCopy').addEventListener('click', () => this.copyCorrected());
+    document.getElementById('btnApplyAll').addEventListener('click', () => this.applyAll());
+
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        this.filter = chip.dataset.filter;
+        this.renderIssuesList();
+      });
+    });
+  }
+
+  syncHighlightsNoCheck() {
+    this.$highlights.textContent = this.$editor.value + ' ';
+  }
+
+  renderAll() {
+    const text = this.$editor.value;
+    this.errors = this.engine.check(text);
+    this.renderHighlights(text);
+    this.renderIssuesList();
+    this.renderStats(text);
+    this.renderScore(text);
+    this.renderCounts();
+  }
+
+  renderHighlights(text) {
+    let html = '';
+    let lastIdx = 0;
+    for (const err of this.errors) {
+      html += escapeHtml(text.substring(lastIdx, err.start));
+      const focusClass = err.id === this.focusedId ? ' focus' : '';
+      html += `<mark class="sev-${err.severity}${focusClass}" data-id="${err.id}">`;
+      html += escapeHtml(text.substring(err.start, err.end));
+      html += '</mark>';
+      lastIdx = err.end;
+    }
+    html += escapeHtml(text.substring(lastIdx));
+    // Trailing space to match textarea height
+    html += ' ';
+    this.$highlights.innerHTML = html;
+  }
+
+  renderIssuesList() {
+    const filtered = this.filter === 'all'
+      ? this.errors
+      : this.errors.filter(e => e.severity === this.filter);
+
+    if (filtered.length === 0) {
+      this.$issuesList.innerHTML = `
+        <div class="empty-state">
+          <div class="big">${this.errors.length === 0 && this.$editor.value.trim() ? '★' : '✓'}</div>
+          <div class="msg">${
+            !this.$editor.value.trim() ? 'Start writing to see suggestions.'
+            : this.errors.length === 0 ? 'Clean sheet — you\'d make Kittle proud.'
+            : 'No issues match this filter.'
+          }</div>
+        </div>`;
+      document.getElementById('btnApplyAll').disabled = true;
+      return;
+    }
+
+    const hasFixable = filtered.some(e => e.suggestion);
+    document.getElementById('btnApplyAll').disabled = !hasFixable;
+
+    this.$issuesList.innerHTML = filtered.map(err => {
+      const focused = err.id === this.focusedId ? ' focused' : '';
+      const change = err.suggestion
+        ? `<del>${escapeHtml(err.original)}</del><span class="arrow">→</span><ins>${escapeHtml(err.suggestion)}</ins>`
+        : `<ins style="background: transparent; color: var(--ink-soft); font-weight: 400">${escapeHtml(err.original)}</ins>`;
+      const applyBtn = err.suggestion
+        ? `<button class="btn btn-primary" data-action="apply" data-id="${err.id}">Apply</button>`
+        : '';
+      return `
+        <div class="issue${focused}" data-id="${err.id}">
+          <div class="issue-head">
+            <div class="issue-category"><span class="sev-dot ${err.severity}"></span>${err.category}</div>
+          </div>
+          <div class="issue-change">${change}</div>
+          <div class="issue-message">${escapeHtml(err.message)}</div>
+          <div class="issue-actions">
+            ${applyBtn}
+            <button class="btn" data-action="ignore" data-id="${err.id}">Dismiss</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    this.$issuesList.querySelectorAll('.issue').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (btn) {
+          const id = btn.dataset.id;
+          const action = btn.dataset.action;
+          if (action === 'apply') this.applyFix(id);
+          else if (action === 'ignore') this.dismiss(id);
+        } else {
+          this.focusError(el.dataset.id);
+        }
+      });
+    });
+  }
+
+  renderStats(text) {
+    const s = computeStats(text);
+    document.getElementById('statWords').textContent = s.words;
+    document.getElementById('statSents').textContent = text.trim() ? s.sentences : 0;
+    document.getElementById('statChars').textContent = s.chars;
+    const mins = Math.floor(s.readTime / 60);
+    const secs = s.readTime % 60;
+    document.getElementById('statRead').textContent = s.words === 0 ? '0s' :
+      (mins > 0 ? `${mins}m ${secs}s` : `${secs}s`);
+    document.getElementById('statGrade').textContent = s.words === 0 ? '—' :
+      (s.grade < 1 ? '<1' : s.grade > 20 ? '20+' : Math.round(s.grade).toString());
+  }
+
+  renderScore(text) {
+    const stats = computeStats(text);
+    const { score, grade, detail } = scoreFromErrors(this.errors, stats.words);
+    this.$scoreNum.textContent = score;
+    this.$scoreGrade.textContent = grade;
+    this.$scoreDetail.textContent = detail;
+    // Ring
+    const circumference = 2 * Math.PI * 42;
+    const offset = circumference * (1 - score / 100);
+    this.$ringFg.style.strokeDasharray = circumference.toFixed(2);
+    this.$ringFg.style.strokeDashoffset = offset.toFixed(2);
+    // Color shift
+    let color = 'var(--accent)';
+    if (score >= 85) color = 'var(--green)';
+    else if (score >= 70) color = 'var(--amber)';
+    this.$ringFg.style.stroke = color;
+  }
+
+  renderCounts() {
+    const counts = { all: this.errors.length, error: 0, warning: 0, style: 0 };
+    for (const e of this.errors) counts[e.severity]++;
+    document.getElementById('countAll').textContent = counts.all;
+    document.getElementById('countError').textContent = counts.error;
+    document.getElementById('countWarning').textContent = counts.warning;
+    document.getElementById('countStyle').textContent = counts.style;
+  }
+
+  focusError(id) {
+    this.focusedId = id;
+    const err = this.errors.find(e => e.id === id);
+    if (!err) return;
+    this.renderHighlights(this.$editor.value);
+    this.renderIssuesList();
+    // Move cursor to error location
+    this.$editor.focus();
+    this.$editor.setSelectionRange(err.start, err.end);
+  }
+
+  applyFix(id) {
+    const err = this.errors.find(e => e.id === id);
+    if (!err || !err.suggestion) return;
+    const text = this.$editor.value;
+    const newText = text.substring(0, err.start) + err.suggestion + text.substring(err.end);
+    this.$editor.value = newText;
+    this.focusedId = null;
+    this.renderAll();
+  }
+
+  dismiss(id) {
+    this.errors = this.errors.filter(e => e.id !== id);
+    this.renderHighlights(this.$editor.value);
+    this.renderIssuesList();
+    this.renderCounts();
+    this.renderScore(this.$editor.value);
+  }
+
+  applyAll() {
+    // Apply in reverse order so offsets stay valid
+    let text = this.$editor.value;
+    const withFixes = this.errors.filter(e => e.suggestion).sort((a, b) => b.start - a.start);
+    for (const err of withFixes) {
+      text = text.substring(0, err.start) + err.suggestion + text.substring(err.end);
+    }
+    this.$editor.value = text;
+    this.focusedId = null;
+    this.renderAll();
+  }
+
+  copyCorrected() {
+    let text = this.$editor.value;
+    const withFixes = this.errors.filter(e => e.suggestion).sort((a, b) => b.start - a.start);
+    for (const err of withFixes) {
+      text = text.substring(0, err.start) + err.suggestion + text.substring(err.end);
+    }
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('btnCopy');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => btn.textContent = orig, 1500);
+    });
+  }
+
+  loadExample() {
+    this.$editor.value =
+`i cant beleive how good george kittle is at the tight end position. he definately catches alot of passes, and its amazing how many times he breaks tackles. me and my friend was watching a game last week and we seen him juke three defenders. their's no one better then him in my opinion. your gonna love watching him play if you havent already seen him. me and him both grew up in oregon, which was a european country once? no wait, i mean oregon is a state. anyways, he could of been a linebacker but he chose tight end.  he plays on sundays in the fall, mostly in october and november. its really really important to recognise his impact on the game.`;
+    this.renderAll();
+    this.$editor.focus();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.ui = new UI();
+});
 </script>
 
 </body>
