@@ -219,7 +219,17 @@ margin-bottom:8px;transition:all .2s ease}
 .ds-partial{background:rgba(100,181,246,.2);color:#90caf9;border:1px solid rgba(100,181,246,.3)}
 .docket-progress{margin-top:6px;height:3px;background:var(–border);border-radius:2px;overflow:hidden}
 .docket-progress-fill{height:100%;background:var(–gold);transition:width .4s ease}
-.docket-empty{font-size:10px;color:var(–muted);font-style:italic;text-align:center;padding:20px;font-family:‘Libre Baskerville’,serif}
+.docket-empty{font-size:10px;color:var(–muted);font-style:italic;text-align:center;padding:20px;font-family:’Libre Baskerville’,serif}
+.docket-args{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px;flex-wrap:wrap}
+.docket-arg-boost{font-size:8px;color:var(–green2);letter-spacing:.5px;font-family:’Cinzel’,serif;font-weight:600}
+.btn-argue{background:rgba(21,101,192,.12);border:1px solid rgba(21,101,192,.35);color:#90caf9;
+font-family:’Cinzel’,serif;font-size:8px;letter-spacing:1px;padding:3px 10px;cursor:pointer;
+transition:all .2s;border-radius:2px;font-weight:600}
+.btn-argue:hover:not([disabled]){background:rgba(21,101,192,.25);border-color:var(–blue2);transform:scale(1.02)}
+.btn-argue[disabled]{opacity:.4;cursor:not-allowed}
+.arg-modal .r-hl{font-size:15px}
+.arg-win-odds{font-size:9px;color:var(–gold2);letter-spacing:1px;font-family:’Cinzel’,serif;
+margin-bottom:12px;padding:5px 10px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:2px;display:inline-block}
 
 /* Calendar */
 .cal-title{font-family:‘Cinzel’,serif;font-size:12px;color:var(–blue3);letter-spacing:2px;
@@ -445,6 +455,24 @@ color:var(–white);letter-spacing:1px;box-shadow:0 4px 16px rgba(0,0,0,.5);anim
     <div class="r-body" id="r-body"></div>
     <div class="r-stats" id="r-stats"></div>
     <button class="btn-ok" onclick="closeOverlay()">CONTINUE</button>
+  </div>
+</div>
+
+<!-- COURT ARGUMENT OVERLAY -->
+
+<div class="overlay" id="arg-overlay">
+  <div class="rcard arg-modal">
+    <div class="r-verdict">
+      <span class="r-verdict-icon">⚖️</span>
+      <div>
+        <div class="r-hl" id="arg-case-title">PRESENT YOUR ARGUMENT</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;font-family:'Libre Baskerville',serif;font-style:italic" id="arg-case-info"></div>
+      </div>
+    </div>
+    <div id="arg-win-odds-display"></div>
+    <div class="r-body" style="margin-bottom:12px">Choose an argument strategy to boost your odds in court. Each argument costs <strong>1 AP</strong>. You may file up to 3 arguments per case — but returns diminish with each one.</div>
+    <div id="arg-buttons" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+    <button class="btn-ok" style="background:transparent;border-color:var(--muted);color:var(--muted);font-size:12px;padding:8px 20px;letter-spacing:2px" onclick="closeArgOverlay()">CANCEL</button>
   </div>
 </div>
 
@@ -827,6 +855,14 @@ const SCENARIOS = [
 // ═══════════════════════════════════════════════════════════════
 const $ = id => document.getElementById(id);
 
+function showToast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.classList.add('fade'); setTimeout(()=>t.remove(), 350); }, 2200);
+}
+
 function renderAll(){
   renderStats();
   renderTopbar();
@@ -955,12 +991,27 @@ function renderDocket(){
     const statusCls = d.outcome==='victory'?'ds-victory':d.outcome==='defeat'?'ds-defeat':d.outcome==='partial'?'ds-partial':'ds-pending';
     const statusText = d.outcome==='victory'?'✓ VICTORY':d.outcome==='defeat'?'✗ DEFEAT':d.outcome==='partial'?'◐ PARTIAL WIN':'⏳ PENDING';
     const courtName = d.outcome?d.courtDecided:(['District Court','Circuit Court','SUPREME COURT'][d.level]);
+    const argCount = (d.args||[]).length;
+    const boostPct = Math.round((d.argBonus||0)*100);
+    const canArgue = !d.outcome && S.ap >= 1 && argCount < 3;
+    const argTip = S.ap < 1 ? 'Need AP to argue' : argCount >= 3 ? 'Max 3 arguments per case' : 'Present an argument to boost win odds';
+    const argBoostHtml = boostPct > 0
+      ? `<span class="docket-arg-boost">📈 +${boostPct}% win odds · ${argCount}/3 arg${argCount!==1?'s':''}</span>`
+      : `<span style="font-size:8px;color:var(--muted);font-style:italic;font-family:'Libre Baskerville',serif">No arguments filed yet</span>`;
+    const argBtnLabel = argCount > 0 ? `⚖️ ARGUE (${argCount}/3)` : '⚖️ ARGUE';
+    const argSection = !d.outcome ? `
+      <div class="docket-args">
+        ${argBoostHtml}
+        <button class="btn-argue" onclick="openArgumentModal('${d.id}')" ${canArgue?'':'disabled'} title="${argTip}">${argBtnLabel}</button>
+      </div>
+    ` : '';
     return `
       <div class="docket-card">
         <div class="docket-case">Case No. ${d.caseNum}</div>
         <div class="docket-title">${d.title}</div>
         <div class="docket-court">${courtName}${d.outcome?'':(' — '+d.months_at_level+' mo at this level')}</div>
         <span class="docket-status ${statusCls}">${statusText}</span>
+        ${argSection}
         <div class="docket-progress"><div class="docket-progress-fill" style="width:${progress}%"></div></div>
       </div>
     `;
@@ -1151,6 +1202,133 @@ function buildResultBody(o, fx){
 function closeOverlay(){ $('overlay').classList.remove('on'); }
 
 // ═══════════════════════════════════════════════════════════════
+// COURT ARGUMENTS — boost lawsuit win probability
+// ═══════════════════════════════════════════════════════════════
+const ARGUMENT_TYPES = [
+  {
+    id: 'constitutional',
+    name: 'Constitutional Argument',
+    badge: 'FOUNDATIONAL',
+    desc: 'Ground the challenge in the explicit text of the Constitution and its structural guarantees. Makes it very hard for any judge to rule against you.',
+    emoji: '📜',
+    bonus: 0.14,
+    fx: { crt: +3 },
+    hl: 'Constitutional grounds solidified — court must confront the text'
+  },
+  {
+    id: 'precedent',
+    name: 'Precedent Briefing',
+    badge: 'PRECEDENT',
+    desc: 'Flood the record with binding case law from every relevant circuit. Every precedent nailed down is a vote easier to win. Also expedites the schedule.',
+    emoji: '📚',
+    bonus: 0.10,
+    fx: { crt: +2 },
+    expedite: true,
+    hl: 'Precedent brief filed — court timetable accelerated'
+  },
+  {
+    id: 'public_interest',
+    name: 'Public Interest Brief',
+    badge: 'PUBLIC INTEREST',
+    desc: 'Demonstrate exactly who is harmed if the court rules wrong. Mobilizes amicus support, press attention, and public awareness around the case.',
+    emoji: '🏛️',
+    bonus: 0.08,
+    fx: { pub: +4, dem: +2 },
+    hl: 'Public interest brief amplifies case — amicus support pours in'
+  }
+];
+
+function calcCurrentWinOdds(d){
+  const base = 0.20 + 0.10 * d.merits;
+  const crtMod = (S.crt - 50) / 250;
+  const levelMod = d.level === 2 ? -0.18 : 0;
+  const argMod = d.argBonus || 0;
+  return Math.max(0.10, Math.min(0.92, base + crtMod + levelMod + argMod));
+}
+
+function openArgumentModal(caseId){
+  const d = S.dockets.find(x => x.id === caseId);
+  if(!d || d.outcome) return;
+  if(S.ap < 1){ showToast('Need at least 1 AP to argue a case.'); return; }
+  const argCount = (d.args||[]).length;
+  if(argCount >= 3){ showToast('Maximum 3 arguments per case.'); return; }
+
+  const courts = ['District Court','Circuit Court','SUPREME COURT'];
+  $('arg-case-title').textContent = 'ARGUE: ' + d.title.replace('In re: ','');
+  const multiplier = argCount === 0 ? 1.0 : argCount === 1 ? 0.75 : 0.5;
+  const returnNote = argCount === 0 ? 'First argument — full bonus' : argCount === 1 ? '2nd argument — 75% return' : '3rd argument — 50% return';
+  $('arg-case-info').textContent = 'Case ' + d.caseNum + ' · ' + courts[d.level] + ' · ' + returnNote;
+
+  const currentOdds = calcCurrentWinOdds(d);
+  $('arg-win-odds-display').innerHTML = `<div class="arg-win-odds">Current win probability: ${Math.round(currentOdds*100)}%</div>`;
+
+  const btns = $('arg-buttons');
+  btns.innerHTML = ARGUMENT_TYPES.map(arg => {
+    const effectiveBonus = Math.round(arg.bonus * multiplier * 100);
+    const newOdds = Math.round(Math.min(0.92, currentOdds + arg.bonus * multiplier) * 100);
+    const fxHtml = Object.entries(arg.fx).map(([k,v])=>{
+      const labels = {crt:'Courts', pub:'Public', dem:'Democracy'};
+      const isGood = v > 0;
+      return `<span class="fx ${isGood?'pos':'neg'}">${labels[k]||k} ${v>0?'+':''}${v}</span>`;
+    }).join('');
+    return `
+      <button class="dec-btn legal" style="width:100%" onclick="presentArgument('${caseId}','${arg.id}')">
+        <div class="dec-btn-head">
+          <span class="dbadge legal">${arg.badge}</span>
+          <span class="ap-cost">1 AP · ${Math.round(currentOdds*100)}% → ${newOdds}%</span>
+        </div>
+        <div class="dname">${arg.emoji} ${arg.name}</div>
+        <div class="ddesc">${arg.desc}</div>
+        <div class="dfx">${fxHtml}</div>
+      </button>
+    `;
+  }).join('');
+
+  $('arg-overlay').classList.add('on');
+}
+
+function closeArgOverlay(){ $('arg-overlay').classList.remove('on'); }
+
+function presentArgument(caseId, argTypeId){
+  const d = S.dockets.find(x => x.id === caseId);
+  if(!d || d.outcome || S.ap < 1) return;
+  closeArgOverlay();
+
+  const arg = ARGUMENT_TYPES.find(a => a.id === argTypeId);
+  if(!arg) return;
+
+  S.ap -= 1;
+  if(!d.args) d.args = [];
+  const argCount = d.args.length;
+  const multiplier = argCount === 0 ? 1.0 : argCount === 1 ? 0.75 : 0.5;
+  const effectiveBonus = arg.bonus * multiplier;
+
+  d.args.push(argTypeId);
+  d.argBonus = (d.argBonus || 0) + effectiveBonus;
+
+  const fx = {};
+  Object.entries(arg.fx||{}).forEach(([k,v])=>{ fx[k]=v; S[k]=clamp(S[k]+v); });
+
+  if(arg.expedite && d.months_at_level > 0){
+    d.months_at_level = Math.max(0, d.months_at_level - 1);
+  }
+
+  S.score += 5;
+  const boostDisplay = Math.round(effectiveBonus * 100);
+  const courts = ['District Court','Circuit Court','SUPREME COURT'];
+  addLog('ARGUMENT FILED: '+d.caseNum, arg.name+' at '+courts[d.level]+'. Win odds +'+boostDisplay+'%.', 'win-log');
+
+  showResult({
+    name: arg.name,
+    hl: arg.hl,
+    desc: arg.desc + (arg.expedite ? ' The comprehensive brief accelerated the court\'s timetable.' : ''),
+    type: 'legal'
+  }, fx);
+
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════════════════
 // LAWSUITS — progress monthly
 // ═══════════════════════════════════════════════════════════════
 function createLawsuit(title, merits){
@@ -1165,6 +1343,8 @@ function createLawsuit(title, merits){
     months_at_level: 0,
     outcome: null,
     courtDecided: null,
+    args: [],
+    argBonus: 0,
   };
   S.dockets.push(d);
 }
@@ -1183,12 +1363,13 @@ function progressLawsuits(){
 
 function ruleCase(d){
   const courts = ['District Court','Circuit Court','SUPREME COURT'];
-  // Success probability: baseline = 20% + 10*merits + courts stat influence
+  // Success probability: baseline = 20% + 10*merits + courts stat influence + argument bonus
   const base = 0.20 + 0.10 * d.merits;
   const crtMod = (S.crt - 50) / 250; // +/- 0.20
   // SCOTUS is harder — adjusted for 6-3 court
   const levelMod = d.level === 2 ? -0.18 : 0;
-  const p = Math.max(0.10, Math.min(0.92, base + crtMod + levelMod));
+  const argMod = d.argBonus || 0;
+  const p = Math.max(0.10, Math.min(0.92, base + crtMod + levelMod + argMod));
   const win = Math.random() < p;
 
   if(win){
